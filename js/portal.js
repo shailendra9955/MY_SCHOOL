@@ -1,0 +1,1 @@
+document.addEventListener("DOMContentLoaded",()=>{const b=document.querySelector("[data-portal-menu]"),n=document.querySelector(".portal-nav");if(b&&n)b.onclick=()=>n.classList.toggle("open");const p=location.pathname.split("/").pop();document.querySelectorAll(".portal-nav a").forEach(a=>{if(a.getAttribute("href")===p)a.classList.add("active")})});
