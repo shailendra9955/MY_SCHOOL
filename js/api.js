@@ -1,13 +1,9 @@
 // ============================================================
 // Modern Convent School
-// API Communication Layer
+// API CLIENT
 // ============================================================
 
 window.MCSApi = {
-
-    // --------------------------------------------------------
-    // Check whether API has been configured
-    // --------------------------------------------------------
 
     configured() {
 
@@ -18,21 +14,67 @@ window.MCSApi = {
             url.trim() !== "" &&
             !url.includes("PASTE_YOUR_")
         );
+
     },
 
 
-    // --------------------------------------------------------
-    // Main API Request
-    // --------------------------------------------------------
+    getSession() {
 
-    async request(action, payload = {}, method = "POST") {
+        try {
+
+            const raw =
+                sessionStorage.getItem(
+                    "MCS_SESSION"
+                );
+
+            return raw
+                ? JSON.parse(raw)
+                : null;
+
+        } catch (error) {
+
+            return null;
+
+        }
+
+    },
+
+
+    async request(
+        action,
+        payload = {},
+        method = "POST"
+    ) {
 
         if (!this.configured()) {
 
             throw new Error(
-                "Google Apps Script API URL is not configured. " +
-                "Please add it in js/Config.js."
+                "Google Apps Script API URL is not configured."
             );
+
+        }
+
+
+        const session =
+            this.getSession();
+
+
+        const requestData = {
+
+            ...payload
+
+        };
+
+
+        // Add current login token automatically.
+        if (
+            session &&
+            session.token
+        ) {
+
+            requestData.sessionToken =
+                session.token;
+
         }
 
 
@@ -56,11 +98,9 @@ window.MCSApi = {
             let response;
 
 
-            // =================================================
-            // GET REQUEST
-            // =================================================
-
-            if (method === "GET") {
+            if (
+                method === "GET"
+            ) {
 
                 const requestUrl =
                     new URL(url);
@@ -72,80 +112,78 @@ window.MCSApi = {
                 );
 
 
-                Object.entries(payload).forEach(
+                Object.entries(
+                    requestData
+                ).forEach(
                     ([key, value]) => {
 
                         requestUrl.searchParams.set(
+
                             key,
+
                             typeof value === "object"
+
                                 ? JSON.stringify(value)
+
                                 : String(value)
+
                         );
 
                     }
                 );
 
 
-                response = await fetch(
-                    requestUrl.toString(),
-                    {
-                        method: "GET",
-                        redirect: "follow",
-                        signal: controller.signal
-                    }
-                );
+                response =
+                    await fetch(
+                        requestUrl.toString(),
+                        {
+                            method: "GET",
+                            redirect: "follow",
+                            signal:
+                                controller.signal
+                        }
+                    );
+
+            } else {
+
+                response =
+                    await fetch(
+
+                        url,
+
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "text/plain;charset=utf-8"
+
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    action:
+                                        action,
+
+                                    ...requestData
+
+                                }),
+
+                            redirect:
+                                "follow",
+
+                            signal:
+                                controller.signal
+
+                        }
+
+                    );
 
             }
 
-
-            // =================================================
-            // POST REQUEST
-            // =================================================
-
-            else {
-
-                const requestBody = {
-
-                    action: action,
-
-                    ...payload
-
-                };
-
-
-                response = await fetch(
-
-                    url,
-
-                    {
-
-                        method: "POST",
-
-                        headers: {
-
-                            "Content-Type":
-                                "text/plain;charset=utf-8"
-
-                        },
-
-                        body:
-                            JSON.stringify(requestBody),
-
-                        redirect: "follow",
-
-                        signal:
-                            controller.signal
-
-                    }
-
-                );
-
-            }
-
-
-            // =================================================
-            // READ RESPONSE
-            // =================================================
 
             const responseText =
                 await response.text();
@@ -154,8 +192,9 @@ window.MCSApi = {
             if (!responseText) {
 
                 throw new Error(
-                    "The server returned an empty response."
+                    "The API returned an empty response."
                 );
+
             }
 
 
@@ -165,28 +204,23 @@ window.MCSApi = {
             try {
 
                 result =
-                    JSON.parse(responseText);
+                    JSON.parse(
+                        responseText
+                    );
 
-            }
-
-            catch (error) {
+            } catch (error) {
 
                 console.error(
-                    "Invalid API response:",
+                    "Raw API response:",
                     responseText
                 );
 
                 throw new Error(
-                    "Google Apps Script returned an invalid response. " +
-                    "Check your Apps Script deployment."
+                    "API returned invalid JSON."
                 );
 
             }
 
-
-            // =================================================
-            // API ERROR
-            // =================================================
 
             if (
                 !response.ok ||
@@ -197,27 +231,18 @@ window.MCSApi = {
 
                     result.message ||
                     result.error ||
-                    `API request failed (${response.status})`
+                    "API request failed."
 
                 );
 
             }
 
 
-            // =================================================
-            // RETURN DATA
-            // =================================================
-
-            if (
+            return (
                 result.data !== undefined
-            ) {
-
-                return result.data;
-
-            }
-
-
-            return result;
+                    ? result.data
+                    : result
+            );
 
         }
 
@@ -225,11 +250,12 @@ window.MCSApi = {
         catch (error) {
 
             if (
-                error.name === "AbortError"
+                error.name ===
+                "AbortError"
             ) {
 
                 throw new Error(
-                    "The API request timed out."
+                    "API request timed out."
                 );
 
             }
@@ -242,18 +268,19 @@ window.MCSApi = {
 
         finally {
 
-            clearTimeout(timeout);
+            clearTimeout(
+                timeout
+            );
 
         }
 
     },
 
 
-    // --------------------------------------------------------
-    // GET
-    // --------------------------------------------------------
-
-    get(action, payload = {}) {
+    get(
+        action,
+        payload = {}
+    ) {
 
         return this.request(
             action,
@@ -264,11 +291,10 @@ window.MCSApi = {
     },
 
 
-    // --------------------------------------------------------
-    // POST
-    // --------------------------------------------------------
-
-    post(action, payload = {}) {
+    post(
+        action,
+        payload = {}
+    ) {
 
         return this.request(
             action,
