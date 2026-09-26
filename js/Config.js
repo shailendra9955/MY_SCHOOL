@@ -32,7 +32,7 @@ const API_CONFIG = {
     // --------------------------------------------------------
 
     GOOGLE_APPS_SCRIPT_URL:
-        "https://script.google.com/macros/s/AKfycbwMb6ixWWtgy92lBIZXDjXJ6W-gWVbWprKvnJW66Txby9yNrF34iyB3GRCF35llLVH6/exec",
+        "https://script.google.com/macros/s/AKfycbwe2qVsHHGRlPA_DHfCDaMJ8zthTucsxvbGlAbwdPWGI03EsF5DpqGTV8YCrpFOQwB8/exec",
 
     timeout: 30000,
 
