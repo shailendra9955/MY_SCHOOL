@@ -1,0 +1,63 @@
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#263746;line-height:1.6}
+a{text-decoration:none;color:inherit}
+.container{width:min(1180px,92%);margin:auto}
+.topbar{background:#0b2d4d;color:#fff;font-size:13px}
+.topbar-inner{display:flex;justify-content:space-between;padding:8px 0}
+.main-header{background:#fff;border-bottom:1px solid #e3e9ef;position:sticky;top:0;z-index:1000;box-shadow:0 3px 12px #0000000b}
+.nav-container{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.school-brand{display:flex;align-items:center;gap:12px}
+.school-logo{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:#0b2d4d;color:#fff;border:4px solid #e5ad35;font-weight:800}
+.school-name strong{display:block;color:#0b2d4d;font-size:19px}
+.school-name span{font-size:12px;color:#6d7c8b}
+.main-nav{display:flex;align-items:center;gap:3px}
+.main-nav>a,.nav-dropdown>a{padding:10px 11px;border-radius:6px;font-size:14px;white-space:nowrap}
+.main-nav>a:hover,.nav-dropdown>a:hover,.main-nav a.active{background:#edf5fc;color:#125f9f}
+.nav-dropdown{position:relative}
+.dropdown-menu{display:none;position:absolute;top:100%;left:0;min-width:210px;background:#fff;border:1px solid #e3e9ef;box-shadow:0 8px 25px #00000014;padding:7px;border-radius:0 0 7px 7px}
+.nav-dropdown:hover .dropdown-menu{display:block}
+.dropdown-menu a{display:block;padding:9px;border-radius:5px}
+.dropdown-menu a:hover{background:#edf5fc}
+.login-button{background:#e5ad35!important;color:#0b2d4d!important;font-weight:700}
+.mobile-menu-button{display:none;background:#0b2d4d;color:#fff;border:0;border-radius:6px;padding:8px 12px;font-size:20px}
+.mobile-nav{display:none;background:#0b2d4d;padding:8px 18px 18px}
+.mobile-nav a{display:block;color:#fff;padding:11px;border-bottom:1px solid #ffffff1a}
+.mobile-nav.show{display:block}
+.hero{min-height:510px;display:flex;align-items:center;color:#fff;background:linear-gradient(120deg,#0b2d4df2,#0f5ea8d1)}.hero-inner{padding:75px 0}.eyebrow{color:#e5ad35;font-weight:800;letter-spacing:2px;text-transform:uppercase;font-size:13px}.hero h1{font-size:clamp(38px,6vw,68px);line-height:1.08;margin:12px 0}.hero p{max-width:720px;font-size:18px}
+.btn{display:inline-block;padding:11px 18px;border-radius:6px;background:#e5ad35;color:#0b2d4d;font-weight:700;border:0;cursor:pointer}
+.btn.outline{background:transparent;border:1px solid #fff;color:#fff}
+.section{padding:70px 0}
+.section.alt{background:#f5f8fb}
+.section-head h2{color:#0b2d4d;font-size:34px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.card{background:#fff;border:1px solid #e3e9ef;border-radius:10px;padding:24px;box-shadow:0 8px 25px #0000000d}
+.card h3{color:#0b2d4d}
+.page-hero{background:linear-gradient(120deg,#0b2d4d,#125f9f);color:#fff;padding:10px 0}
+.page-hero h1{font-size:45px;margin:5px 0}
+.breadcrumb{color:#d7e6f2;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.stat{text-align:center;padding:24px;background:#fff;border-radius:10px;box-shadow:0 8px 25px #0000000d}
+.stat strong{display:block;font-size:32px;color:#125f9f}
+.notice{border-left:4px solid #e5ad35;padding:15px 18px;background:#fff;margin:12px 0;border-radius:7px}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:11px;border:1px solid #e3e9ef}
+.table th{background:#edf5fc;color:#0b2d4d}
+.form{display:grid;gap:12px}
+.form input,.form select,.form textarea{padding:11px;border:1px solid #ccd6e0;border-radius:6px;font:inherit}
+.form textarea{min-height:120px}
+.footer{background:#081e32;color:#c8d6e3;padding:55px 0 20px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:30px}
+.footer h3{color:#fff}
+.footer a{display:block;margin:7px 0}
+.copyright{border-top:1px solid #284158;margin-top:35px;padding-top:18px;font-size:13px}
+@media(max-width:1050px){.main-nav{display:none}
+.mobile-menu-button{display:block}
+.grid{grid-template-columns:repeat(2,1fr)}
+.stats{grid-template-columns:repeat(2,1fr)}
+.footer-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.topbar-inner{display:block;text-align:center}
+.grid,.grid-2,.stats,.footer-grid{grid-template-columns:1fr}
+.school-name strong{font-size:16px}
+.school-name span{font-size:10px}}
