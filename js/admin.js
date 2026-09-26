@@ -1,0 +1,1 @@
+document.addEventListener("DOMContentLoaded",()=>{const b=document.querySelector("[data-admin-menu]"),n=document.querySelector(".admin-nav");if(b&&n)b.onclick=()=>n.classList.toggle("open");const p=location.pathname.split("/").pop();document.querySelectorAll(".admin-nav a").forEach(a=>{if(a.getAttribute("href")===p)a.classList.add("active")})});
