@@ -26,16 +26,8 @@
 <body>
 
 
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
-
     <div data-header></div>
 
-
-    <!-- =====================================================
-         PAGE HEADER
-    ====================================================== -->
 
     <section class="page-hero">
 
@@ -63,10 +55,6 @@
     </section>
 
 
-    <!-- =====================================================
-         LOGIN
-    ====================================================== -->
-
     <section class="section">
 
         <div
@@ -91,22 +79,14 @@
                 </p>
 
 
-                <!-- =========================================
-                     LOGIN FORM
-                ========================================== -->
-
                 <form
                     id="loginForm"
                     class="form"
                 >
 
 
-                    <!-- USERNAME -->
-
                     <label for="username">
-
                         Username
-
                     </label>
 
 
@@ -120,12 +100,8 @@
                     >
 
 
-                    <!-- PASSWORD -->
-
                     <label for="password">
-
                         Password
-
                     </label>
 
 
@@ -139,20 +115,14 @@
                     >
 
 
-                    <!-- LOGIN BUTTON -->
-
                     <button
                         id="loginButton"
                         type="submit"
                         class="btn"
                     >
-
                         Login
-
                     </button>
 
-
-                    <!-- ERROR MESSAGE -->
 
                     <div
                         id="loginMessage"
@@ -177,10 +147,8 @@
                         font-size:14px;
                     "
                 >
-
                     If you do not have an account,
                     please contact the school administrator.
-
                 </p>
 
             </div>
@@ -190,27 +158,21 @@
     </section>
 
 
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
-
     <div data-footer></div>
 
 
-    <!-- =====================================================
-         JAVASCRIPT
-    ====================================================== -->
+    <!-- IMPORTANT: CONFIG FIRST -->
 
     <script src="js/Config.js"></script>
 
+    <!-- API SECOND -->
+
     <script src="js/api.js"></script>
+
+    <!-- COMMON WEBSITE JS -->
 
     <script src="js/app.js"></script>
 
-
-    <!-- =====================================================
-         LOGIN SCRIPT
-    ====================================================== -->
 
     <script>
 
@@ -246,10 +208,6 @@
                             .getElementById("loginMessage");
 
 
-                    // -------------------------------------------------
-                    // Clear old message
-                    // -------------------------------------------------
-
                     message.style.display =
                         "none";
 
@@ -257,54 +215,37 @@
                         "";
 
 
-                    // -------------------------------------------------
-                    // Check API configuration
-                    // -------------------------------------------------
-
-                    if (!MCSApi.configured()) {
-
-                        showLoginError(
-                            "Google Apps Script API URL is not configured. " +
-                            "Please add it to js/Config.js."
-                        );
-
-                        return;
-
-                    }
-
-
-                    // -------------------------------------------------
-                    // Validate
-                    // -------------------------------------------------
-
                     if (!username) {
 
-                        showLoginError(
+                        showMessage(
                             "Please enter your username."
                         );
 
                         return;
-
                     }
 
 
                     if (!password) {
 
-                        showLoginError(
+                        showMessage(
                             "Please enter your password."
                         );
 
                         return;
-
                     }
 
 
-                    // -------------------------------------------------
-                    // Disable button
-                    // -------------------------------------------------
+                    if (!MCSApi.configured()) {
 
-                    button.disabled =
-                        true;
+                        showMessage(
+                            "API URL is not configured in js/Config.js."
+                        );
+
+                        return;
+                    }
+
+
+                    button.disabled = true;
 
                     button.textContent =
                         "Signing in...";
@@ -312,91 +253,90 @@
 
                     try {
 
-
-                        // =============================================
-                        // SEND LOGIN REQUEST
-                        // =============================================
+                        /*
+                         * IMPORTANT
+                         *
+                         * The backend expects:
+                         *
+                         * username
+                         * password
+                         */
 
                         const result =
                             await MCSApi.post(
-                                API_ACTIONS.LOGIN,
+                                "login",
                                 {
-
                                     username:
                                         username,
 
                                     password:
                                         password
-
                                 }
                             );
 
 
                         console.log(
-                            "Login response:",
+                            "Login successful:",
                             result
                         );
 
 
-                        // =============================================
-                        // FIND SESSION
-                        // =============================================
+                        /*
+                         * Code.gs returns:
+                         *
+                         * {
+                         *     session: {...},
+                         *     user: {...}
+                         * }
+                         */
 
                         const session =
-                            result &&
-                            result.session
-                                ? result.session
-                                : result;
+                            result.session;
 
 
-                        if (!session) {
+                        const user =
+                            result.user;
+
+
+                        if (
+                            !session ||
+                            !session.token
+                        ) {
 
                             throw new Error(
-                                "Login response did not contain a session."
+                                "Login succeeded but no session was returned."
                             );
-
                         }
 
 
-                        // =============================================
-                        // GET ROLE
-                        // =============================================
-
-                        const role =
-                            String(
-                                session.role ||
-                                result.role ||
-                                ""
-                            )
-                            .trim()
-                            .toLowerCase();
-
-
-                        if (!role) {
-
-                            throw new Error(
-                                "The server did not return a user role."
-                            );
-
-                        }
-
-
-                        // =============================================
-                        // SAVE SESSION
-                        //
-                        // This is NOT school data.
-                        // It is only the current login session.
-                        // =============================================
+                        /*
+                         * Store ONLY the login session.
+                         *
+                         * No student/teacher/fee/etc.
+                         * data is stored here.
+                         */
 
                         sessionStorage.setItem(
                             "MCS_SESSION",
-                            JSON.stringify(session)
+                            JSON.stringify(
+                                session
+                            )
                         );
 
 
-                        // =============================================
-                        // REDIRECT
-                        // =============================================
+                        const role =
+                            String(
+                                user?.role ||
+                                session.role ||
+                                ""
+                            )
+                            .toLowerCase();
+
+
+                        /*
+                         * Redirect according
+                         * to server-provided role.
+                         */
 
                         if (
                             role === "admin" ||
@@ -407,7 +347,6 @@
                                 "admin/dashboard.html";
 
                             return;
-
                         }
 
 
@@ -421,7 +360,6 @@
                                 "portal/teacher.html";
 
                             return;
-
                         }
 
 
@@ -434,15 +372,13 @@
                                 "portal/dashboard.html";
 
                             return;
-
                         }
 
 
                         throw new Error(
-                            "Your account has an unsupported role: " +
+                            "Unsupported user role: " +
                             role
                         );
-
 
                     }
 
@@ -450,14 +386,14 @@
                     catch (error) {
 
                         console.error(
-                            "Login error:",
+                            "LOGIN ERROR:",
                             error
                         );
 
 
-                        showLoginError(
+                        showMessage(
                             error.message ||
-                            "Login failed. Please check your username and password."
+                            "Login failed."
                         );
 
                     }
@@ -477,11 +413,7 @@
             );
 
 
-        // ============================================================
-        // SHOW LOGIN ERROR
-        // ============================================================
-
-        function showLoginError(message) {
+        function showMessage(text) {
 
             const element =
                 document.getElementById(
@@ -490,12 +422,11 @@
 
 
             element.textContent =
-                message;
+                text;
 
 
             element.style.display =
                 "block";
-
         }
 
     </script>
