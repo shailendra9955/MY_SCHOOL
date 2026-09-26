@@ -1,90 +1,54 @@
-// ============================================================
-// Modern Convent School
-// API CLIENT
-// ============================================================
-
 window.MCSApi = {
 
     configured() {
-
-        const url =
-            API_CONFIG.GOOGLE_APPS_SCRIPT_URL || "";
+        const url = API_CONFIG.GOOGLE_APPS_SCRIPT_URL || "";
 
         return (
             url.trim() !== "" &&
-            !url.includes("PASTE_YOUR_")
+            !url.includes("YOUR_ACTUAL")
         );
-
     },
 
 
     getSession() {
-
         try {
+            const value =
+                sessionStorage.getItem("MCS_SESSION");
 
-            const raw =
-                sessionStorage.getItem(
-                    "MCS_SESSION"
-                );
-
-            return raw
-                ? JSON.parse(raw)
+            return value
+                ? JSON.parse(value)
                 : null;
 
         } catch (error) {
-
             return null;
-
         }
-
     },
 
 
-    async request(
-        action,
-        payload = {},
-        method = "POST"
-    ) {
+    async request(action, payload = {}, method = "POST") {
 
         if (!this.configured()) {
-
             throw new Error(
                 "Google Apps Script API URL is not configured."
             );
-
         }
 
 
-        const session =
-            this.getSession();
-
+        const session = this.getSession();
 
         const requestData = {
-
             ...payload
-
         };
 
 
-        // Add current login token automatically.
-        if (
-            session &&
-            session.token
-        ) {
-
-            requestData.sessionToken =
-                session.token;
-
+        // Add login session to authenticated requests.
+        if (session && session.token) {
+            requestData.sessionToken = session.token;
         }
-
-
-        const url =
-            API_CONFIG.GOOGLE_APPS_SCRIPT_URL;
 
 
         const controller =
             new AbortController();
-
 
         const timeout =
             setTimeout(
@@ -98,13 +62,12 @@ window.MCSApi = {
             let response;
 
 
-            if (
-                method === "GET"
-            ) {
+            if (method === "GET") {
 
                 const requestUrl =
-                    new URL(url);
-
+                    new URL(
+                        API_CONFIG.GOOGLE_APPS_SCRIPT_URL
+                    );
 
                 requestUrl.searchParams.set(
                     "action",
@@ -112,21 +75,14 @@ window.MCSApi = {
                 );
 
 
-                Object.entries(
-                    requestData
-                ).forEach(
+                Object.entries(requestData).forEach(
                     ([key, value]) => {
 
                         requestUrl.searchParams.set(
-
                             key,
-
                             typeof value === "object"
-
                                 ? JSON.stringify(value)
-
                                 : String(value)
-
                         );
 
                     }
@@ -139,8 +95,7 @@ window.MCSApi = {
                         {
                             method: "GET",
                             redirect: "follow",
-                            signal:
-                                controller.signal
+                            signal: controller.signal
                         }
                     );
 
@@ -148,53 +103,37 @@ window.MCSApi = {
 
                 response =
                     await fetch(
-
-                        url,
-
+                        API_CONFIG.GOOGLE_APPS_SCRIPT_URL,
                         {
-
                             method: "POST",
 
                             headers: {
-
                                 "Content-Type":
                                     "text/plain;charset=utf-8"
-
                             },
 
-                            body:
-                                JSON.stringify({
+                            body: JSON.stringify({
+                                action: action,
+                                ...requestData
+                            }),
 
-                                    action:
-                                        action,
-
-                                    ...requestData
-
-                                }),
-
-                            redirect:
-                                "follow",
+                            redirect: "follow",
 
                             signal:
                                 controller.signal
-
                         }
-
                     );
-
             }
 
 
-            const responseText =
+            const text =
                 await response.text();
 
 
-            if (!responseText) {
-
+            if (!text) {
                 throw new Error(
-                    "The API returned an empty response."
+                    "Google Apps Script returned an empty response."
                 );
-
             }
 
 
@@ -202,23 +141,18 @@ window.MCSApi = {
 
 
             try {
-
-                result =
-                    JSON.parse(
-                        responseText
-                    );
+                result = JSON.parse(text);
 
             } catch (error) {
 
                 console.error(
                     "Raw API response:",
-                    responseText
+                    text
                 );
 
                 throw new Error(
-                    "API returned invalid JSON."
+                    "Google Apps Script returned invalid JSON."
                 );
-
             }
 
 
@@ -228,13 +162,10 @@ window.MCSApi = {
             ) {
 
                 throw new Error(
-
                     result.message ||
                     result.error ||
                     "API request failed."
-
                 );
-
             }
 
 
@@ -244,64 +175,41 @@ window.MCSApi = {
                     : result
             );
 
-        }
-
-
-        catch (error) {
+        } catch (error) {
 
             if (
-                error.name ===
-                "AbortError"
+                error.name === "AbortError"
             ) {
 
                 throw new Error(
                     "API request timed out."
                 );
-
             }
-
 
             throw error;
 
-        }
+        } finally {
 
-
-        finally {
-
-            clearTimeout(
-                timeout
-            );
+            clearTimeout(timeout);
 
         }
-
     },
 
 
-    get(
-        action,
-        payload = {}
-    ) {
-
+    get(action, payload = {}) {
         return this.request(
             action,
             payload,
             "GET"
         );
-
     },
 
 
-    post(
-        action,
-        payload = {}
-    ) {
-
+    post(action, payload = {}) {
         return this.request(
             action,
             payload,
             "POST"
         );
-
     }
-
 };
