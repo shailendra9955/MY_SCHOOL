@@ -1,1 +1,73 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dashboard | Modern Convent School</title><link rel="stylesheet" href="../css/admin.css"><script src="../js/Config.js"></script><script src="../js/api.js"></script></head><body class="admin"><div class="admin-shell"><aside class="admin-sidebar"><div class="admin-brand"><div class="admin-logo">MC</div><div><strong>Modern Convent School</strong><small>Management Panel</small></div></div><button class="admin-mobile-toggle" data-admin-menu>☰ Menu</button><nav class="admin-nav"><a href="dashboard.html">Dashboard</a><a href="students.html">Students</a><a href="teachers.html">Teachers</a><a href="users.html">Users & Staff</a><a href="parents.html">Parents</a><a href="classes.html">Classes</a><a href="sections.html">Sections</a><a href="subjects.html">Subjects</a><a href="attendance.html">Attendance</a><a href="homework.html">Homework</a><a href="assignments.html">Assignments</a><a href="exams.html">Exams</a><a href="marks.html">Marks / Results</a><a href="fees.html">Fees</a><a href="payments.html">Payments</a><a href="notices.html">Notices</a><a href="events.html">Events</a><a href="gallery.html">Gallery</a><a href="admissions.html">Admissions</a><a href="documents.html">Documents</a><a href="messages.html">Messages</a><a href="settings.html">Settings</a><a href="../index.html">Public Website</a><a href="../login.html">Logout</a></nav></aside><main class="admin-main"><div class="admin-topbar"><strong>Dashboard</strong><span>Administrator</span></div><section class="admin-page-head"><div><h1>School Management Dashboard</h1><p>Live school data only. No dummy records and no browser database.</p></div></section><div class="admin-cards"><div class="admin-metric">Students<strong id="s">—</strong></div><div class="admin-metric">Teachers<strong id="t">—</strong></div><div class="admin-metric">Users / Staff<strong id="u">—</strong></div><div class="admin-metric">Admissions<strong id="a">—</strong></div></div><section class="admin-panel"><h2>Connection</h2><p id="status">API URL is not configured.</p></section></main></div><script>document.addEventListener('DOMContentLoaded',async()=>{if(!MCSApi.configured())return;try{const d=await MCSApi.get(API_ACTIONS.GET_ADMIN_DASHBOARD);document.getElementById('s').textContent=d.students??d.totalStudents??'—';document.getElementById('t').textContent=d.teachers??d.totalTeachers??'—';document.getElementById('u').textContent=d.users??d.totalUsers??'—';document.getElementById('a').textContent=d.admissions??d.pendingAdmissions??'—';document.getElementById('status').textContent='Connected to Google Apps Script API.'}catch(e){document.getElementById('status').textContent=e.message}});</script></body></html>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard | Modern Convent School</title>
+<link rel="stylesheet" href="../css/admin.css">
+<script src="../js/Config.js"></script>
+<script src="../js/api.js"></script>
+</head>
+<body class="admin">
+<div class="admin-shell">
+<aside class="admin-sidebar">
+<div class="admin-brand">
+<div class="admin-logo">MC</div>
+<div>
+<strong>Modern Convent School</strong><small>Management Panel</small>
+</div>
+</div>
+<button class="admin-mobile-toggle" data-admin-menu>☰ Menu</button>
+<nav class="admin-nav">
+<a href="dashboard.html">Dashboard</a>
+<a href="students.html">Students</a>
+<a href="teachers.html">Teachers</a>
+<a href="users.html">Users & Staff</a>
+<a href="parents.html">Parents</a>
+<a href="classes.html">Classes</a>
+<a href="sections.html">Sections</a>
+<a href="subjects.html">Subjects</a>
+<a href="attendance.html">Attendance</a>
+<a href="homework.html">Homework</a>
+<a href="assignments.html">Assignments</a>
+<a href="exams.html">Exams</a>
+<a href="marks.html">Marks / Results</a>
+<a href="fees.html">Fees</a>
+<a href="payments.html">Payments</a>
+<a href="notices.html">Notices</a>
+<a href="events.html">Events</a>
+<a href="gallery.html">Gallery</a>
+<a href="admissions.html">Admissions</a>
+<a href="documents.html">Documents</a>
+<a href="messages.html">Messages</a>
+<a href="settings.html">Settings</a>
+<a href="../index.html">Public Website</a>
+<a href="../login.html">Logout</a>
+</nav>
+</aside>
+<main class="admin-main">
+<div class="admin-topbar">
+<strong>Dashboard</strong><span>Administrator</span>
+</div>
+<section class="admin-page-head">
+<div>
+<h1>School Management Dashboard</h1>
+<p>Live data...</p>
+</div>
+</section>
+<div class="admin-cards">
+<div class="admin-metric">Students<strong id="s">—</strong></div>
+<div class="admin-metric">Teachers<strong id="t">—</strong></div>
+<div class="admin-metric">Users / Staff<strong id="u">—</strong></div>
+<div class="admin-metric">Admissions<strong id="a">—</strong></div>
+</div>
+<section class="admin-panel">
+<h2>Connection</h2>
+<p id="status">API URL is not configured.</p>
+</section>
+</main>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded',async()=>{if(!MCSApi.configured())return;try{const d=await MCSApi.get(API_ACTIONS.GET_ADMIN_DASHBOARD);document.getElementById('s').textContent=d.students??d.totalStudents??'—';document.getElementById('t').textContent=d.teachers??d.totalTeachers??'—';document.getElementById('u').textContent=d.users??d.totalUsers??'—';document.getElementById('a').textContent=d.admissions??d.pendingAdmissions??'—';document.getElementById('status').textContent='Connected to Google Apps Script API.'}catch(e){document.getElementById('status').textContent=e.message}});</script>
+</body>
+</html>
