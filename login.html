@@ -1,7 +1,506 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Login | Modern Convent School</title><link rel="stylesheet" href="css/site.css"></head><body><div data-header></div><section class="page-hero"><div class="container"><div class="breadcrumb"><a href="index.html">Home</a> / Login</div><h1>School Portal Login</h1></div></section><section class="section"><div class="container" style="max-width:520px"><div class="card"><h2>Sign in</h2><form id="loginForm" class="form"><input id="user" required placeholder="User ID"><input id="pass" type="password" required placeholder="Password"><select id="role"><option value="student">Student / Parent</option><option value="teacher">Teacher</option><option value="admin">Administrator</option></select><button class="btn">Login</button></form><p style="color:#6b7b8c">Demo accounts are documented in README.md. Replace demo authentication with the deployed Apps Script backend before production use.</p></div></div></section><script>
-document.getElementById('loginForm').addEventListener('submit',async e=>{e.preventDefault();const role=document.getElementById('role').value;const user=document.getElementById('user').value;const pass=document.getElementById('pass').value;
-const demo=(user==='admin'&&pass==='admin123')||(user==='teacher'&&pass==='teacher123')||(user==='student'&&pass==='student123');
-if(demo){location.href=role==='admin'?'/admin/dashboard.html':role==='teacher'?'/portal/teacher.html':'/portal/dashboard.html';return;}
-const r=await api('login',{user,password:pass,role}); if(r.ok){location.href=role==='admin'?'/admin/dashboard.html':role==='teacher'?'/portal/teacher.html':'/portal/dashboard.html';}else alert(r.message||'Login failed');
-});
-</script><div data-footer></div><script src="js/app.js"></script></body></html>
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Login | Modern Convent School
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="css/site.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div data-header></div>
+
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <section class="page-hero">
+
+        <div class="container">
+
+            <div class="breadcrumb">
+
+                <a href="index.html">
+                    Home
+                </a>
+
+                /
+
+                Login
+
+            </div>
+
+
+            <h1>
+                School Portal Login
+            </h1>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         LOGIN
+    ====================================================== -->
+
+    <section class="section">
+
+        <div
+            class="container"
+            style="max-width:520px"
+        >
+
+            <div class="card">
+
+                <h2>
+                    Sign in
+                </h2>
+
+
+                <p
+                    style="
+                        color:#6b7b8c;
+                        margin-bottom:20px;
+                    "
+                >
+                    Sign in using your school account.
+                </p>
+
+
+                <!-- =========================================
+                     LOGIN FORM
+                ========================================== -->
+
+                <form
+                    id="loginForm"
+                    class="form"
+                >
+
+
+                    <!-- USERNAME -->
+
+                    <label for="username">
+
+                        Username
+
+                    </label>
+
+
+                    <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        autocomplete="username"
+                        required
+                        placeholder="Enter username"
+                    >
+
+
+                    <!-- PASSWORD -->
+
+                    <label for="password">
+
+                        Password
+
+                    </label>
+
+
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        autocomplete="current-password"
+                        required
+                        placeholder="Enter password"
+                    >
+
+
+                    <!-- LOGIN BUTTON -->
+
+                    <button
+                        id="loginButton"
+                        type="submit"
+                        class="btn"
+                    >
+
+                        Login
+
+                    </button>
+
+
+                    <!-- ERROR MESSAGE -->
+
+                    <div
+                        id="loginMessage"
+                        style="
+                            display:none;
+                            margin-top:15px;
+                            padding:12px;
+                            border-radius:6px;
+                            background:#fff1f1;
+                            color:#b42318;
+                        "
+                    ></div>
+
+
+                </form>
+
+
+                <p
+                    style="
+                        color:#6b7b8c;
+                        margin-top:20px;
+                        font-size:14px;
+                    "
+                >
+
+                    If you do not have an account,
+                    please contact the school administrator.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <div data-footer></div>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="js/Config.js"></script>
+
+    <script src="js/api.js"></script>
+
+    <script src="js/app.js"></script>
+
+
+    <!-- =====================================================
+         LOGIN SCRIPT
+    ====================================================== -->
+
+    <script>
+
+        document
+            .getElementById("loginForm")
+            .addEventListener(
+                "submit",
+                async function(event) {
+
+                    event.preventDefault();
+
+
+                    const username =
+                        document
+                            .getElementById("username")
+                            .value
+                            .trim();
+
+
+                    const password =
+                        document
+                            .getElementById("password")
+                            .value;
+
+
+                    const button =
+                        document
+                            .getElementById("loginButton");
+
+
+                    const message =
+                        document
+                            .getElementById("loginMessage");
+
+
+                    // -------------------------------------------------
+                    // Clear old message
+                    // -------------------------------------------------
+
+                    message.style.display =
+                        "none";
+
+                    message.textContent =
+                        "";
+
+
+                    // -------------------------------------------------
+                    // Check API configuration
+                    // -------------------------------------------------
+
+                    if (!MCSApi.configured()) {
+
+                        showLoginError(
+                            "Google Apps Script API URL is not configured. " +
+                            "Please add it to js/Config.js."
+                        );
+
+                        return;
+
+                    }
+
+
+                    // -------------------------------------------------
+                    // Validate
+                    // -------------------------------------------------
+
+                    if (!username) {
+
+                        showLoginError(
+                            "Please enter your username."
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (!password) {
+
+                        showLoginError(
+                            "Please enter your password."
+                        );
+
+                        return;
+
+                    }
+
+
+                    // -------------------------------------------------
+                    // Disable button
+                    // -------------------------------------------------
+
+                    button.disabled =
+                        true;
+
+                    button.textContent =
+                        "Signing in...";
+
+
+                    try {
+
+
+                        // =============================================
+                        // SEND LOGIN REQUEST
+                        // =============================================
+
+                        const result =
+                            await MCSApi.post(
+                                API_ACTIONS.LOGIN,
+                                {
+
+                                    username:
+                                        username,
+
+                                    password:
+                                        password
+
+                                }
+                            );
+
+
+                        console.log(
+                            "Login response:",
+                            result
+                        );
+
+
+                        // =============================================
+                        // FIND SESSION
+                        // =============================================
+
+                        const session =
+                            result &&
+                            result.session
+                                ? result.session
+                                : result;
+
+
+                        if (!session) {
+
+                            throw new Error(
+                                "Login response did not contain a session."
+                            );
+
+                        }
+
+
+                        // =============================================
+                        // GET ROLE
+                        // =============================================
+
+                        const role =
+                            String(
+                                session.role ||
+                                result.role ||
+                                ""
+                            )
+                            .trim()
+                            .toLowerCase();
+
+
+                        if (!role) {
+
+                            throw new Error(
+                                "The server did not return a user role."
+                            );
+
+                        }
+
+
+                        // =============================================
+                        // SAVE SESSION
+                        //
+                        // This is NOT school data.
+                        // It is only the current login session.
+                        // =============================================
+
+                        sessionStorage.setItem(
+                            "MCS_SESSION",
+                            JSON.stringify(session)
+                        );
+
+
+                        // =============================================
+                        // REDIRECT
+                        // =============================================
+
+                        if (
+                            role === "admin" ||
+                            role === "super_admin"
+                        ) {
+
+                            window.location.href =
+                                "admin/dashboard.html";
+
+                            return;
+
+                        }
+
+
+                        if (
+                            role === "teacher" ||
+                            role === "staff" ||
+                            role === "accountant"
+                        ) {
+
+                            window.location.href =
+                                "portal/teacher.html";
+
+                            return;
+
+                        }
+
+
+                        if (
+                            role === "student" ||
+                            role === "parent"
+                        ) {
+
+                            window.location.href =
+                                "portal/dashboard.html";
+
+                            return;
+
+                        }
+
+
+                        throw new Error(
+                            "Your account has an unsupported role: " +
+                            role
+                        );
+
+
+                    }
+
+
+                    catch (error) {
+
+                        console.error(
+                            "Login error:",
+                            error
+                        );
+
+
+                        showLoginError(
+                            error.message ||
+                            "Login failed. Please check your username and password."
+                        );
+
+                    }
+
+
+                    finally {
+
+                        button.disabled =
+                            false;
+
+                        button.textContent =
+                            "Login";
+
+                    }
+
+                }
+            );
+
+
+        // ============================================================
+        // SHOW LOGIN ERROR
+        // ============================================================
+
+        function showLoginError(message) {
+
+            const element =
+                document.getElementById(
+                    "loginMessage"
+                );
+
+
+            element.textContent =
+                message;
+
+
+            element.style.display =
+                "block";
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>
