@@ -900,51 +900,116 @@
     // REDIRECT AFTER LOGIN
     // ========================================================
 
-    function normalizePortalRole(role) {
-    const value = String(role || "")
-        .trim()
-        .toLowerCase()
-        .replace(/[\s-]+/g, "_");
+
+function normalizePortalRole(role) {
+
+    const value =
+        String(role || "")
+            .trim()
+            .toLowerCase()
+            .replace(/[\s-]+/g, "_");
+
 
     switch (value) {
+
+        // ------------------------------------------------
+        // SUPER ADMIN
+        // ------------------------------------------------
 
         case "super_admin":
         case "superadministrator":
         case "super_administrator":
         case "superadmin":
+
             return "super_admin";
+
+
+        // ------------------------------------------------
+        // ADMIN
+        // ------------------------------------------------
 
         case "admin":
         case "administrator":
         case "administrator_account":
+
             return "admin";
 
+
+        // ------------------------------------------------
+        // PRINCIPAL
+        // ------------------------------------------------
+
         case "principal":
+
             return "principal";
 
+
+        // ------------------------------------------------
+        // TEACHER
+        // ------------------------------------------------
+
         case "teacher":
+
             return "teacher";
 
+
+        // ------------------------------------------------
+        // ACCOUNTANT
+        // ------------------------------------------------
+
         case "accountant":
+
             return "accountant";
 
+
+        // ------------------------------------------------
+        // STAFF
+        // ------------------------------------------------
+
         case "staff":
+
             return "staff";
 
+
+        // ------------------------------------------------
+        // STUDENT
+        // ------------------------------------------------
+
         case "student":
+
             return "student";
 
+
+        // ------------------------------------------------
+        // PARENT
+        // ------------------------------------------------
+
         case "parent":
+
             return "parent";
 
+
+        // ------------------------------------------------
+        // UNKNOWN
+        // ------------------------------------------------
+
         default:
+
             return value;
+
     }
+
 }
 
-    function redirectAfterLogin(session) {
+
+function redirectAfterLogin(session) {
+
+    // ----------------------------------------------------
+    // SESSION CHECK
+    // ----------------------------------------------------
 
     if (!session) {
+
         console.error(
             "Redirect failed: session is missing."
         );
@@ -954,58 +1019,92 @@
         );
 
         return;
+
     }
 
 
-    let role =
-        String(
-            session.role || ""
-        )
-            .trim()
-            .toLowerCase()
-            .replace(
-                /[\s-]+/g,
-                "_"
-            );
-
-
-    console.log(
-        "Authenticated server role:",
-        role
-    );
-
-
+    // ----------------------------------------------------
+    // GET SERVER ROLE
+    // ----------------------------------------------------
     /*
      * IMPORTANT:
      *
      * The role comes from the Google Apps Script
-     * Users sheet. We do not use the login dropdown.
+     * Users sheet.
+     *
+     * The login dropdown is NOT used here.
      */
 
+    const originalRole =
+        String(
+            session.role || ""
+        ).trim();
+
+
+    // ----------------------------------------------------
+    // NORMALIZE ROLE
+    // ----------------------------------------------------
+
+    const role =
+        normalizePortalRole(
+            originalRole
+        );
+
+
+    console.log(
+        "Authenticated server role:",
+        originalRole
+    );
+
+
+    console.log(
+        "Normalized portal role:",
+        role
+    );
+
+
+    // ----------------------------------------------------
+    // PORTAL MAPPING
+    // ----------------------------------------------------
 
     const roleHomes = {
 
+        // Super Admin
         super_admin:
             "admin/dashboard.html",
 
+
+        // Normal Admin
         admin:
             "admin/dashboard.html",
 
+
+        // Principal
         principal:
             "admin/dashboard.html",
 
+
+        // Teacher
         teacher:
             "portal/teacher.html",
 
+
+        // Accountant
         accountant:
             "portal/accountant.html",
 
+
+        // Staff
         staff:
             "portal/staff.html",
 
+
+        // Student
         student:
             "portal/dashboard.html",
 
+
+        // Parent
         parent:
             "portal/dashboard.html"
 
@@ -1022,17 +1121,28 @@
     );
 
 
+    // ----------------------------------------------------
+    // UNKNOWN ROLE
+    // ----------------------------------------------------
+
     if (!destination) {
 
         console.error(
             "Unknown authenticated role:",
-            session.role
+            {
+                originalRole:
+                    originalRole,
+
+                normalizedRole:
+                    role
+            }
         );
 
 
         showError(
-            "Login succeeded, but no portal is configured for the account role: " +
-            session.role
+            "Login succeeded, but no portal is configured " +
+            "for the account role: " +
+            originalRole
         );
 
 
@@ -1041,18 +1151,48 @@
     }
 
 
+    // ----------------------------------------------------
+    // SAVE CANONICAL ROLE IN SESSION
+    // ----------------------------------------------------
     /*
-     * login.html is in the website root.
+     * This is important.
      *
-     * Therefore:
+     * If the backend returns:
      *
-     * admin/dashboard.html
+     * super_administrator
      *
-     * means:
+     * the frontend session will contain:
      *
-     * /admin/dashboard.html
+     * super_admin
+     *
+     * after this point.
      */
 
+    session.role =
+        role;
+
+
+    // ----------------------------------------------------
+    // SAVE SESSION AGAIN
+    // ----------------------------------------------------
+
+    if (
+        typeof MCSAuth !== "undefined" &&
+        MCSAuth &&
+        typeof MCSAuth.saveSession ===
+            "function"
+    ) {
+
+        MCSAuth.saveSession(
+            session
+        );
+
+    }
+
+
+    // ----------------------------------------------------
+    // BUILD FINAL URL
+    // ----------------------------------------------------
 
     const targetUrl =
         new URL(
@@ -1066,6 +1206,10 @@
         targetUrl
     );
 
+
+    // ----------------------------------------------------
+    // REDIRECT
+    // ----------------------------------------------------
 
     window.location.replace(
         targetUrl
