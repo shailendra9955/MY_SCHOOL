@@ -1,15 +1,15 @@
-<!-- Modern Convent School | portal/dashboard.html | Maintainable HTML structure. Shared behavior is loaded from js/ files. -->
+<!-- Modern Convent School | portal/parent.html | Maintainable HTML structure. Shared behavior is loaded from js/ files. -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
  <head>
   <meta charset="utf-8"/>
-  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
   <title>
-   Dashboard | Portal
+   Parent Dashboard | Modern Convent School
   </title>
   <link href="../css/portal.css" rel="stylesheet"/>
  </head>
- <body class="portal" data-required-roles="STUDENT,PARENT">
+ <body class="portal" data-required-roles="PARENT">
   <div class="portal-shell">
    <aside class="portal-sidebar">
     <div class="portal-brand">
@@ -25,10 +25,10 @@
       </small>
      </div>
     </div>
-    <button class="portal-mobile-toggle" data-portal-menu="">
+    <button aria-expanded="false" class="portal-mobile-toggle" data-portal-menu="" type="button">
      ☰ Menu
     </button>
-    <nav class="portal-nav">
+    <nav aria-label="Portal navigation" class="portal-nav">
      <a href="dashboard.html">
       Dashboard
      </a>
@@ -67,51 +67,70 @@
    <main class="portal-main">
     <div class="portal-topbar">
      <strong>
-      Dashboard
+      Parent Dashboard
      </strong>
      <span data-current-role="">
-      School Portal
+      PARENT
      </span>
     </div>
+    <section class="portal-page-head">
+     <span class="portal-kicker">
+      Family school-services workspace
+     </span>
+     <h1>
+      Parent Portal
+     </h1>
+     <p>
+      Access linked student information only after the server verifies your account.
+     </p>
+    </section>
     <div class="portal-cards">
      <div class="portal-metric">
-      Attendance
+      <span>
+       Attendance
+      </span>
       <strong>
-       92%
+       Live API
       </strong>
      </div>
      <div class="portal-metric">
-      Assignments
+      <span>
+       Homework
+      </span>
       <strong>
-       08
+       Live API
       </strong>
      </div>
      <div class="portal-metric">
-      Pending Fees
+      <span>
+       Results
+      </span>
       <strong>
-       ₹0
+       Live API
       </strong>
      </div>
      <div class="portal-metric">
-      Notices
+      <span>
+       Fees
+      </span>
       <strong>
-       03
+       Live API
       </strong>
      </div>
     </div>
-    <div class="portal-panel">
+    <section class="portal-panel">
      <h2>
-      Dashboard
+      Secure portal
      </h2>
      <p>
-      This portal section is ready for Google Sheets integration. Replace demo content with live records through the API.
+      Information shown here must be loaded from the
+                    authenticated Google Apps Script API. Never place
+                    private student, parent, staff or financial records
+                    directly in the HTML source.
      </p>
-    </div>
+    </section>
    </main>
   </div>
-  
-  
-  
   
   
   

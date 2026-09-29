@@ -1,1 +1,106 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Attendance | Portal</title><link rel="stylesheet" href="../css/portal.css"></head><body class="portal"><div class="portal-shell"><aside class="portal-sidebar"><div class="portal-brand"><div class="portal-logo">MC</div><div><strong>School Portal</strong><small>Modern Convent School</small></div></div><button class="portal-mobile-toggle" data-portal-menu>☰ Menu</button><nav class="portal-nav"><a href="dashboard.html">Dashboard</a><a href="profile.html">Profile</a><a href="attendance.html">Attendance</a><a href="timetable.html">Timetable</a><a href="homework.html">Homework</a><a href="results.html">Results</a><a href="fees.html">Fees</a><a href="notices.html">Notices</a><a href="teacher.html">Teacher</a><a href="../index.html">Public Website</a><a href="../login.html">Logout</a></nav></aside><main class="portal-main"><div class="portal-topbar"><strong>Attendance</strong><span>School Portal</span></div><div class="portal-panel"><h2>Attendance</h2><p>This portal section is ready for Google Sheets integration. Replace demo content with live records through the API.</p></div></main></div><script src="../js/portal.js"></script></body></html>
+<!-- Modern Convent School | portal/attendance.html | Maintainable HTML structure. Shared behavior is loaded from js/ files. -->
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   Attendance | Portal
+  </title>
+  <link href="../css/portal.css" rel="stylesheet"/>
+ </head>
+ <body class="portal" data-required-roles="STUDENT,PARENT,TEACHER,STAFF">
+  <div class="portal-shell">
+   <aside class="portal-sidebar">
+    <div class="portal-brand">
+     <div class="portal-logo">
+      MC
+     </div>
+     <div>
+      <strong>
+       School Portal
+      </strong>
+      <small>
+       Modern Convent School
+      </small>
+     </div>
+    </div>
+    <button class="portal-mobile-toggle" data-portal-menu="">
+     ☰ Menu
+    </button>
+    <nav class="portal-nav">
+     <a href="dashboard.html">
+      Dashboard
+     </a>
+     <a href="profile.html">
+      Profile
+     </a>
+     <a href="attendance.html">
+      Attendance
+     </a>
+     <a href="timetable.html">
+      Timetable
+     </a>
+     <a href="homework.html">
+      Homework
+     </a>
+     <a href="results.html">
+      Results
+     </a>
+     <a href="fees.html">
+      Fees
+     </a>
+     <a href="notices.html">
+      Notices
+     </a>
+     <a href="teacher.html">
+      Teacher
+     </a>
+     <a href="../index.html">
+      Public Website
+     </a>
+     <a data-logout="" href="../login.html">
+      Logout
+     </a>
+    </nav>
+   </aside>
+   <main class="portal-main">
+    <div class="portal-topbar">
+     <strong>
+      Attendance
+     </strong>
+     <span data-current-role="">
+      School Portal
+     </span>
+    </div>
+    <div class="portal-panel">
+     <h2>
+      Attendance
+     </h2>
+     <p>
+      This portal section is ready for Google Sheets integration. Replace demo content with live records through the API.
+     </p>
+    </div>
+   </main>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+
+
+
+<script src="../js/Config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/portal.js"></script>
+</body>
+</html>
