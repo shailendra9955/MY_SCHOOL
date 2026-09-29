@@ -1,1 +1,276 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Teachers | Modern Convent School</title><link rel="stylesheet" href="../css/admin.css"><script src="../js/Config.js"></script><script src="../js/api.js"></script></head><body class="admin"><div class="admin-shell"><aside class="admin-sidebar"><div class="admin-brand"><div class="admin-logo">MC</div><div><strong>Modern Convent School</strong><small>Management Panel</small></div></div><button class="admin-mobile-toggle" data-admin-menu>☰ Menu</button><nav class="admin-nav"><a href="dashboard.html">Dashboard</a><a href="students.html">Students</a><a href="teachers.html">Teachers</a><a href="users.html">Users & Staff</a><a href="parents.html">Parents</a><a href="classes.html">Classes</a><a href="sections.html">Sections</a><a href="subjects.html">Subjects</a><a href="attendance.html">Attendance</a><a href="homework.html">Homework</a><a href="assignments.html">Assignments</a><a href="exams.html">Exams</a><a href="marks.html">Marks / Results</a><a href="fees.html">Fees</a><a href="payments.html">Payments</a><a href="notices.html">Notices</a><a href="events.html">Events</a><a href="gallery.html">Gallery</a><a href="admissions.html">Admissions</a><a href="documents.html">Documents</a><a href="messages.html">Messages</a><a href="settings.html">Settings</a><a href="../index.html">Public Website</a><a href="../login.html">Logout</a></nav></aside><main class="admin-main"><div class="admin-topbar"><strong>Teachers</strong><span>Administrator</span></div><section class="admin-page-head"><div><h1>Teachers</h1><p id="message">No browser storage is used. Records come only from the API.</p></div><button class="btn btn-primary" id="add">＋ Add Teachers</button></section><section class="admin-panel"><div class="student-toolbar"><div class="search-box"><label>Search</label><input id="search" type="search" placeholder="Search live records"></div><button class="btn btn-light" id="reload">↻ Refresh</button></div><div class="table-wrap"><table class="admin-table"><thead><tr><th>Employee ID</th><th>First Name</th><th>Last Name</th><th>Date of Birth</th><th>Gender</th><th>Actions</th></tr></thead><tbody id="body"></tbody></table><div id="empty" class="empty-state">No records available.</div></div></section></main></div><div class="modal-backdrop" id="modal" hidden><div class="modal"><div class="modal-head"><h2 id="modalTitle">Add Teachers</h2><button class="icon-btn" id="close">×</button></div><form id="form"><input type="hidden" id="recordId"><div class="form-grid"><label>Employee ID *<input id="f_employee_id" data-key="employee_id" required></label><label>First Name *<input id="f_first_name" data-key="first_name" required></label><label>Last Name<input id="f_last_name" data-key="last_name" ></label><label>Date of Birth<input id="f_date_of_birth" type="date" data-key="date_of_birth" ></label><label>Gender<input id="f_gender" data-key="gender" ></label><label>Qualification<input id="f_qualification" data-key="qualification" ></label><label>Specialization<input id="f_specialization" data-key="specialization" ></label><label>Subject IDs<input id="f_subject_ids" data-key="subject_ids" ></label><label>Class IDs<input id="f_class_ids" data-key="class_ids" ></label><label>Phone<input id="f_phone" data-key="phone" ></label><label>Email<input id="f_email" data-key="email" ></label><label>Address<textarea id="f_address" data-key="address" rows="3" ></textarea></label><label>Joining Date<input id="f_joining_date" type="date" data-key="joining_date" ></label><label>Photo URL<input id="f_photo_url" data-key="photo_url" ></label><label>Portal Username<input id="f_username" data-key="username" ></label><label>Status *<input id="f_status" data-key="status" required></label></div><div class="form-error" id="error"></div><div class="modal-actions"><button class="btn btn-light" type="button" id="cancel">Cancel</button><button class="btn btn-primary" id="save">Save</button></div></form></div></div><div class="toast" id="toast"></div><script>window.MCS_MODULE={'title': 'Teachers', 'get': 'getTeachers', 'add': 'addTeacher', 'update': 'updateTeacher', 'delete': 'deleteTeacher', 'deactivate': 'deactivateTeacher', 'id': 'teacher_id', 'columns': ['employee_id', 'first_name', 'last_name', 'date_of_birth', 'gender'], 'fields': ['employee_id', 'first_name', 'last_name', 'date_of_birth', 'gender', 'qualification', 'specialization', 'subject_ids', 'class_ids', 'phone', 'email', 'address', 'joining_date', 'photo_url', 'username', 'status']};</script><script src="../js/module.js"></script></body></html>
+<!-- Modern Convent School | admin/teachers.html | Maintainable HTML structure. Shared behavior is loaded from js/ files. -->
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   Teachers | Modern Convent School
+  </title>
+  <link href="../css/admin.css" rel="stylesheet"/>
+ </head>
+ <body class="admin" data-module-add="addTeacher" data-module-columns="employee_id,first_name,last_name,date_of_birth,gender" data-module-deactivate="deactivateTeacher" data-module-delete="deleteTeacher" data-module-fields="employee_id,first_name,last_name,date_of_birth,gender,qualification,specialization,subject_ids,class_ids,phone,email,address,joining_date,photo_url,username,status" data-module-get="getTeachers" data-module-id="teacher_id" data-module-title="Teachers" data-module-update="updateTeacher" data-required-roles="SUPER_ADMIN,ADMIN">
+  <div class="admin-shell">
+   <aside class="admin-sidebar">
+    <div class="admin-brand">
+     <div class="admin-logo">
+      MC
+     </div>
+     <div>
+      <strong>
+       Modern Convent School
+      </strong>
+      <small>
+       Management Panel
+      </small>
+     </div>
+    </div>
+    <button class="admin-mobile-toggle" data-admin-menu="">
+     ☰ Menu
+    </button>
+    <nav class="admin-nav">
+     <a href="dashboard.html">
+      Dashboard
+     </a>
+     <a href="students.html">
+      Students
+     </a>
+     <a href="teachers.html">
+      Teachers
+     </a>
+     <a href="users.html">
+      Users &amp; Staff
+     </a>
+     <a href="parents.html">
+      Parents
+     </a>
+     <a href="classes.html">
+      Classes
+     </a>
+     <a href="sections.html">
+      Sections
+     </a>
+     <a href="subjects.html">
+      Subjects
+     </a>
+     <a href="attendance.html">
+      Attendance
+     </a>
+     <a href="homework.html">
+      Homework
+     </a>
+     <a href="assignments.html">
+      Assignments
+     </a>
+     <a href="exams.html">
+      Exams
+     </a>
+     <a href="marks.html">
+      Marks / Results
+     </a>
+     <a href="fees.html">
+      Fees
+     </a>
+     <a href="payments.html">
+      Payments
+     </a>
+     <a href="notices.html">
+      Notices
+     </a>
+     <a href="events.html">
+      Events
+     </a>
+     <a href="gallery.html">
+      Gallery
+     </a>
+     <a href="admissions.html">
+      Admissions
+     </a>
+     <a href="documents.html">
+      Documents
+     </a>
+     <a href="messages.html">
+      Messages
+     </a>
+     <a href="settings.html">
+      Settings
+     </a>
+     <a href="../index.html">
+      Public Website
+     </a>
+     <a data-logout="" href="../login.html">
+      Logout
+     </a>
+    </nav>
+   </aside>
+   <main class="admin-main">
+    <div class="admin-topbar">
+     <strong>
+      Teachers
+     </strong>
+     <span>
+      Administrator
+     </span>
+    </div>
+    <section class="admin-page-head">
+     <div>
+      <h1>
+       Teachers
+      </h1>
+      <p id="message">
+       No browser storage is used. Records come only from the API.
+      </p>
+     </div>
+     <button class="btn btn-primary" id="add">
+      ＋ Add Teachers
+     </button>
+    </section>
+    <section class="admin-panel">
+     <div class="student-toolbar">
+      <div class="search-box">
+       <label>
+        Search
+       </label>
+       <input id="search" placeholder="Search live records" type="search"/>
+      </div>
+      <button class="btn btn-light" id="reload">
+       ↻ Refresh
+      </button>
+     </div>
+     <div class="table-wrap">
+      <table class="admin-table">
+       <thead>
+        <tr>
+         <th>
+          Employee ID
+         </th>
+         <th>
+          First Name
+         </th>
+         <th>
+          Last Name
+         </th>
+         <th>
+          Date of Birth
+         </th>
+         <th>
+          Gender
+         </th>
+         <th>
+          Actions
+         </th>
+        </tr>
+       </thead>
+       <tbody id="body">
+       </tbody>
+      </table>
+      <div class="empty-state" id="empty">
+       No records available.
+      </div>
+     </div>
+    </section>
+   </main>
+  </div>
+  <div class="modal-backdrop" hidden="" id="modal">
+   <div class="modal">
+    <div class="modal-head">
+     <h2 id="modalTitle">
+      Add Teachers
+     </h2>
+     <button class="icon-btn" id="close">
+      ×
+     </button>
+    </div>
+    <form id="form">
+     <input id="recordId" type="hidden"/>
+     <div class="form-grid">
+      <label>
+       Employee ID *
+       <input data-key="employee_id" id="f_employee_id" required=""/>
+      </label>
+      <label>
+       First Name *
+       <input data-key="first_name" id="f_first_name" required=""/>
+      </label>
+      <label>
+       Last Name
+       <input data-key="last_name" id="f_last_name"/>
+      </label>
+      <label>
+       Date of Birth
+       <input data-key="date_of_birth" id="f_date_of_birth" type="date"/>
+      </label>
+      <label>
+       Gender
+       <input data-key="gender" id="f_gender"/>
+      </label>
+      <label>
+       Qualification
+       <input data-key="qualification" id="f_qualification"/>
+      </label>
+      <label>
+       Specialization
+       <input data-key="specialization" id="f_specialization"/>
+      </label>
+      <label>
+       Subject IDs
+       <input data-key="subject_ids" id="f_subject_ids"/>
+      </label>
+      <label>
+       Class IDs
+       <input data-key="class_ids" id="f_class_ids"/>
+      </label>
+      <label>
+       Phone
+       <input data-key="phone" id="f_phone"/>
+      </label>
+      <label>
+       Email
+       <input data-key="email" id="f_email"/>
+      </label>
+      <label>
+       Address
+       <textarea data-key="address" id="f_address" rows="3"></textarea>
+      </label>
+      <label>
+       Joining Date
+       <input data-key="joining_date" id="f_joining_date" type="date"/>
+      </label>
+      <label>
+       Photo URL
+       <input data-key="photo_url" id="f_photo_url"/>
+      </label>
+      <label>
+       Portal Username
+       <input data-key="username" id="f_username"/>
+      </label>
+      <label>
+       Status *
+       <input data-key="status" id="f_status" required=""/>
+      </label>
+     </div>
+     <div class="form-error" id="error">
+     </div>
+     <div class="modal-actions">
+      <button class="btn btn-light" id="cancel" type="button">
+       Cancel
+      </button>
+      <button class="btn btn-primary" id="save">
+       Save
+      </button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <div class="toast" id="toast">
+  </div>
+  <script src="../js/Config.js">
+  </script>
+  <script src="../js/api.js">
+  </script>
+  <script src="../js/auth.js">
+  </script>
+  <script src="../js/module.js">
+  </script>
+ </body>
+</html>

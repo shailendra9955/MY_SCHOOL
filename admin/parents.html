@@ -1,1 +1,268 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Parents | Modern Convent School</title><link rel="stylesheet" href="../css/admin.css"><script src="../js/Config.js"></script><script src="../js/api.js"></script></head><body class="admin"><div class="admin-shell"><aside class="admin-sidebar"><div class="admin-brand"><div class="admin-logo">MC</div><div><strong>Modern Convent School</strong><small>Management Panel</small></div></div><button class="admin-mobile-toggle" data-admin-menu>☰ Menu</button><nav class="admin-nav"><a href="dashboard.html">Dashboard</a><a href="students.html">Students</a><a href="teachers.html">Teachers</a><a href="users.html">Users & Staff</a><a href="parents.html">Parents</a><a href="classes.html">Classes</a><a href="sections.html">Sections</a><a href="subjects.html">Subjects</a><a href="attendance.html">Attendance</a><a href="homework.html">Homework</a><a href="assignments.html">Assignments</a><a href="exams.html">Exams</a><a href="marks.html">Marks / Results</a><a href="fees.html">Fees</a><a href="payments.html">Payments</a><a href="notices.html">Notices</a><a href="events.html">Events</a><a href="gallery.html">Gallery</a><a href="admissions.html">Admissions</a><a href="documents.html">Documents</a><a href="messages.html">Messages</a><a href="settings.html">Settings</a><a href="../index.html">Public Website</a><a href="../login.html">Logout</a></nav></aside><main class="admin-main"><div class="admin-topbar"><strong>Parents</strong><span>Administrator</span></div><section class="admin-page-head"><div><h1>Parents</h1><p id="message">No browser storage is used. Records come only from the API.</p></div><button class="btn btn-primary" id="add">＋ Add Parents</button></section><section class="admin-panel"><div class="student-toolbar"><div class="search-box"><label>Search</label><input id="search" type="search" placeholder="Search live records"></div><button class="btn btn-light" id="reload">↻ Refresh</button></div><div class="table-wrap"><table class="admin-table"><thead><tr><th>Father Name</th><th>Mother Name</th><th>Guardian Name</th><th>Phone</th><th>Alternate Phone</th><th>Actions</th></tr></thead><tbody id="body"></tbody></table><div id="empty" class="empty-state">No records available.</div></div></section></main></div><div class="modal-backdrop" id="modal" hidden><div class="modal"><div class="modal-head"><h2 id="modalTitle">Add Parents</h2><button class="icon-btn" id="close">×</button></div><form id="form"><input type="hidden" id="recordId"><div class="form-grid"><label>Father Name<input id="f_father_name" data-key="father_name" ></label><label>Mother Name<input id="f_mother_name" data-key="mother_name" ></label><label>Guardian Name<input id="f_guardian_name" data-key="guardian_name" ></label><label>Phone *<input id="f_phone" data-key="phone" required></label><label>Alternate Phone<input id="f_alternate_phone" data-key="alternate_phone" ></label><label>Email<input id="f_email" data-key="email" ></label><label>Address<textarea id="f_address" data-key="address" rows="3" ></textarea></label><label>City<input id="f_city" data-key="city" ></label><label>State<input id="f_state" data-key="state" ></label><label>Pincode<input id="f_pincode" data-key="pincode" ></label><label>Occupation<input id="f_occupation" data-key="occupation" ></label><label>Student IDs<input id="f_student_ids" data-key="student_ids" ></label><label>Portal Username<input id="f_username" data-key="username" ></label><label>Status *<input id="f_status" data-key="status" required></label></div><div class="form-error" id="error"></div><div class="modal-actions"><button class="btn btn-light" type="button" id="cancel">Cancel</button><button class="btn btn-primary" id="save">Save</button></div></form></div></div><div class="toast" id="toast"></div><script>window.MCS_MODULE={'title': 'Parents', 'get': 'getParents', 'add': 'addParent', 'update': 'updateParent', 'delete': 'deleteParent', 'deactivate': 'deactivateParent', 'id': 'parent_id', 'columns': ['father_name', 'mother_name', 'guardian_name', 'phone', 'alternate_phone'], 'fields': ['father_name', 'mother_name', 'guardian_name', 'phone', 'alternate_phone', 'email', 'address', 'city', 'state', 'pincode', 'occupation', 'student_ids', 'username', 'status']};</script><script src="../js/module.js"></script></body></html>
+<!-- Modern Convent School | admin/parents.html | Maintainable HTML structure. Shared behavior is loaded from js/ files. -->
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   Parents | Modern Convent School
+  </title>
+  <link href="../css/admin.css" rel="stylesheet"/>
+ </head>
+ <body class="admin" data-module-add="addParent" data-module-columns="father_name,mother_name,guardian_name,phone,alternate_phone" data-module-deactivate="deactivateParent" data-module-delete="deleteParent" data-module-fields="father_name,mother_name,guardian_name,phone,alternate_phone,email,address,city,state,pincode,occupation,student_ids,username,status" data-module-get="getParents" data-module-id="parent_id" data-module-title="Parents" data-module-update="updateParent" data-required-roles="SUPER_ADMIN,ADMIN">
+  <div class="admin-shell">
+   <aside class="admin-sidebar">
+    <div class="admin-brand">
+     <div class="admin-logo">
+      MC
+     </div>
+     <div>
+      <strong>
+       Modern Convent School
+      </strong>
+      <small>
+       Management Panel
+      </small>
+     </div>
+    </div>
+    <button class="admin-mobile-toggle" data-admin-menu="">
+     ☰ Menu
+    </button>
+    <nav class="admin-nav">
+     <a href="dashboard.html">
+      Dashboard
+     </a>
+     <a href="students.html">
+      Students
+     </a>
+     <a href="teachers.html">
+      Teachers
+     </a>
+     <a href="users.html">
+      Users &amp; Staff
+     </a>
+     <a href="parents.html">
+      Parents
+     </a>
+     <a href="classes.html">
+      Classes
+     </a>
+     <a href="sections.html">
+      Sections
+     </a>
+     <a href="subjects.html">
+      Subjects
+     </a>
+     <a href="attendance.html">
+      Attendance
+     </a>
+     <a href="homework.html">
+      Homework
+     </a>
+     <a href="assignments.html">
+      Assignments
+     </a>
+     <a href="exams.html">
+      Exams
+     </a>
+     <a href="marks.html">
+      Marks / Results
+     </a>
+     <a href="fees.html">
+      Fees
+     </a>
+     <a href="payments.html">
+      Payments
+     </a>
+     <a href="notices.html">
+      Notices
+     </a>
+     <a href="events.html">
+      Events
+     </a>
+     <a href="gallery.html">
+      Gallery
+     </a>
+     <a href="admissions.html">
+      Admissions
+     </a>
+     <a href="documents.html">
+      Documents
+     </a>
+     <a href="messages.html">
+      Messages
+     </a>
+     <a href="settings.html">
+      Settings
+     </a>
+     <a href="../index.html">
+      Public Website
+     </a>
+     <a data-logout="" href="../login.html">
+      Logout
+     </a>
+    </nav>
+   </aside>
+   <main class="admin-main">
+    <div class="admin-topbar">
+     <strong>
+      Parents
+     </strong>
+     <span>
+      Administrator
+     </span>
+    </div>
+    <section class="admin-page-head">
+     <div>
+      <h1>
+       Parents
+      </h1>
+      <p id="message">
+       No browser storage is used. Records come only from the API.
+      </p>
+     </div>
+     <button class="btn btn-primary" id="add">
+      ＋ Add Parents
+     </button>
+    </section>
+    <section class="admin-panel">
+     <div class="student-toolbar">
+      <div class="search-box">
+       <label>
+        Search
+       </label>
+       <input id="search" placeholder="Search live records" type="search"/>
+      </div>
+      <button class="btn btn-light" id="reload">
+       ↻ Refresh
+      </button>
+     </div>
+     <div class="table-wrap">
+      <table class="admin-table">
+       <thead>
+        <tr>
+         <th>
+          Father Name
+         </th>
+         <th>
+          Mother Name
+         </th>
+         <th>
+          Guardian Name
+         </th>
+         <th>
+          Phone
+         </th>
+         <th>
+          Alternate Phone
+         </th>
+         <th>
+          Actions
+         </th>
+        </tr>
+       </thead>
+       <tbody id="body">
+       </tbody>
+      </table>
+      <div class="empty-state" id="empty">
+       No records available.
+      </div>
+     </div>
+    </section>
+   </main>
+  </div>
+  <div class="modal-backdrop" hidden="" id="modal">
+   <div class="modal">
+    <div class="modal-head">
+     <h2 id="modalTitle">
+      Add Parents
+     </h2>
+     <button class="icon-btn" id="close">
+      ×
+     </button>
+    </div>
+    <form id="form">
+     <input id="recordId" type="hidden"/>
+     <div class="form-grid">
+      <label>
+       Father Name
+       <input data-key="father_name" id="f_father_name"/>
+      </label>
+      <label>
+       Mother Name
+       <input data-key="mother_name" id="f_mother_name"/>
+      </label>
+      <label>
+       Guardian Name
+       <input data-key="guardian_name" id="f_guardian_name"/>
+      </label>
+      <label>
+       Phone *
+       <input data-key="phone" id="f_phone" required=""/>
+      </label>
+      <label>
+       Alternate Phone
+       <input data-key="alternate_phone" id="f_alternate_phone"/>
+      </label>
+      <label>
+       Email
+       <input data-key="email" id="f_email"/>
+      </label>
+      <label>
+       Address
+       <textarea data-key="address" id="f_address" rows="3"></textarea>
+      </label>
+      <label>
+       City
+       <input data-key="city" id="f_city"/>
+      </label>
+      <label>
+       State
+       <input data-key="state" id="f_state"/>
+      </label>
+      <label>
+       Pincode
+       <input data-key="pincode" id="f_pincode"/>
+      </label>
+      <label>
+       Occupation
+       <input data-key="occupation" id="f_occupation"/>
+      </label>
+      <label>
+       Student IDs
+       <input data-key="student_ids" id="f_student_ids"/>
+      </label>
+      <label>
+       Portal Username
+       <input data-key="username" id="f_username"/>
+      </label>
+      <label>
+       Status *
+       <input data-key="status" id="f_status" required=""/>
+      </label>
+     </div>
+     <div class="form-error" id="error">
+     </div>
+     <div class="modal-actions">
+      <button class="btn btn-light" id="cancel" type="button">
+       Cancel
+      </button>
+      <button class="btn btn-primary" id="save">
+       Save
+      </button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <div class="toast" id="toast">
+  </div>
+  <script src="../js/Config.js">
+  </script>
+  <script src="../js/api.js">
+  </script>
+  <script src="../js/auth.js">
+  </script>
+  <script src="../js/module.js">
+  </script>
+ </body>
+</html>

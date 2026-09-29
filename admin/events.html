@@ -1,1 +1,252 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Events | Modern Convent School</title><link rel="stylesheet" href="../css/admin.css"><script src="../js/Config.js"></script><script src="../js/api.js"></script></head><body class="admin"><div class="admin-shell"><aside class="admin-sidebar"><div class="admin-brand"><div class="admin-logo">MC</div><div><strong>Modern Convent School</strong><small>Management Panel</small></div></div><button class="admin-mobile-toggle" data-admin-menu>☰ Menu</button><nav class="admin-nav"><a href="dashboard.html">Dashboard</a><a href="students.html">Students</a><a href="teachers.html">Teachers</a><a href="users.html">Users & Staff</a><a href="parents.html">Parents</a><a href="classes.html">Classes</a><a href="sections.html">Sections</a><a href="subjects.html">Subjects</a><a href="attendance.html">Attendance</a><a href="homework.html">Homework</a><a href="assignments.html">Assignments</a><a href="exams.html">Exams</a><a href="marks.html">Marks / Results</a><a href="fees.html">Fees</a><a href="payments.html">Payments</a><a href="notices.html">Notices</a><a href="events.html">Events</a><a href="gallery.html">Gallery</a><a href="admissions.html">Admissions</a><a href="documents.html">Documents</a><a href="messages.html">Messages</a><a href="settings.html">Settings</a><a href="../index.html">Public Website</a><a href="../login.html">Logout</a></nav></aside><main class="admin-main"><div class="admin-topbar"><strong>Events</strong><span>Administrator</span></div><section class="admin-page-head"><div><h1>Events</h1><p id="message">No browser storage is used. Records come only from the API.</p></div><button class="btn btn-primary" id="add">＋ Add Events</button></section><section class="admin-panel"><div class="student-toolbar"><div class="search-box"><label>Search</label><input id="search" type="search" placeholder="Search live records"></div><button class="btn btn-light" id="reload">↻ Refresh</button></div><div class="table-wrap"><table class="admin-table"><thead><tr><th>Title</th><th>Event Type</th><th>Event Date</th><th>Start Time</th><th>End Time</th><th>Actions</th></tr></thead><tbody id="body"></tbody></table><div id="empty" class="empty-state">No records available.</div></div></section></main></div><div class="modal-backdrop" id="modal" hidden><div class="modal"><div class="modal-head"><h2 id="modalTitle">Add Events</h2><button class="icon-btn" id="close">×</button></div><form id="form"><input type="hidden" id="recordId"><div class="form-grid"><label>Title *<input id="f_title" data-key="title" required></label><label>Event Type<input id="f_event_type" data-key="event_type" ></label><label>Event Date *<input id="f_event_date" type="date" data-key="event_date" required></label><label>Start Time<input id="f_start_time" data-key="start_time" ></label><label>End Time<input id="f_end_time" data-key="end_time" ></label><label>Venue<input id="f_venue" data-key="venue" ></label><label>Description<textarea id="f_description" data-key="description" rows="3" ></textarea></label><label>Audience<input id="f_audience" data-key="audience" ></label><label>Image URL<input id="f_image_url" data-key="image_url" ></label><label>Status *<input id="f_status" data-key="status" required></label></div><div class="form-error" id="error"></div><div class="modal-actions"><button class="btn btn-light" type="button" id="cancel">Cancel</button><button class="btn btn-primary" id="save">Save</button></div></form></div></div><div class="toast" id="toast"></div><script>window.MCS_MODULE={'title': 'Events', 'get': 'getEvents', 'add': 'addEvent', 'update': 'updateEvent', 'delete': 'deleteEvent', 'deactivate': None, 'id': 'event_id', 'columns': ['title', 'event_type', 'event_date', 'start_time', 'end_time'], 'fields': ['title', 'event_type', 'event_date', 'start_time', 'end_time', 'venue', 'description', 'audience', 'image_url', 'status']};</script><script src="../js/module.js"></script></body></html>
+<!-- Modern Convent School | admin/events.html | Maintainable HTML structure. Shared behavior is loaded from js/ files. -->
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   Events | Modern Convent School
+  </title>
+  <link href="../css/admin.css" rel="stylesheet"/>
+ </head>
+ <body class="admin" data-module-add="addEvent" data-module-columns="title,event_type,event_date,start_time,end_time" data-module-deactivate="" data-module-delete="deleteEvent" data-module-fields="title,event_type,event_date,start_time,end_time,venue,description,audience,image_url,status" data-module-get="getEvents" data-module-id="event_id" data-module-title="Events" data-module-update="updateEvent" data-required-roles="SUPER_ADMIN,ADMIN">
+  <div class="admin-shell">
+   <aside class="admin-sidebar">
+    <div class="admin-brand">
+     <div class="admin-logo">
+      MC
+     </div>
+     <div>
+      <strong>
+       Modern Convent School
+      </strong>
+      <small>
+       Management Panel
+      </small>
+     </div>
+    </div>
+    <button class="admin-mobile-toggle" data-admin-menu="">
+     ☰ Menu
+    </button>
+    <nav class="admin-nav">
+     <a href="dashboard.html">
+      Dashboard
+     </a>
+     <a href="students.html">
+      Students
+     </a>
+     <a href="teachers.html">
+      Teachers
+     </a>
+     <a href="users.html">
+      Users &amp; Staff
+     </a>
+     <a href="parents.html">
+      Parents
+     </a>
+     <a href="classes.html">
+      Classes
+     </a>
+     <a href="sections.html">
+      Sections
+     </a>
+     <a href="subjects.html">
+      Subjects
+     </a>
+     <a href="attendance.html">
+      Attendance
+     </a>
+     <a href="homework.html">
+      Homework
+     </a>
+     <a href="assignments.html">
+      Assignments
+     </a>
+     <a href="exams.html">
+      Exams
+     </a>
+     <a href="marks.html">
+      Marks / Results
+     </a>
+     <a href="fees.html">
+      Fees
+     </a>
+     <a href="payments.html">
+      Payments
+     </a>
+     <a href="notices.html">
+      Notices
+     </a>
+     <a href="events.html">
+      Events
+     </a>
+     <a href="gallery.html">
+      Gallery
+     </a>
+     <a href="admissions.html">
+      Admissions
+     </a>
+     <a href="documents.html">
+      Documents
+     </a>
+     <a href="messages.html">
+      Messages
+     </a>
+     <a href="settings.html">
+      Settings
+     </a>
+     <a href="../index.html">
+      Public Website
+     </a>
+     <a data-logout="" href="../login.html">
+      Logout
+     </a>
+    </nav>
+   </aside>
+   <main class="admin-main">
+    <div class="admin-topbar">
+     <strong>
+      Events
+     </strong>
+     <span>
+      Administrator
+     </span>
+    </div>
+    <section class="admin-page-head">
+     <div>
+      <h1>
+       Events
+      </h1>
+      <p id="message">
+       No browser storage is used. Records come only from the API.
+      </p>
+     </div>
+     <button class="btn btn-primary" id="add">
+      ＋ Add Events
+     </button>
+    </section>
+    <section class="admin-panel">
+     <div class="student-toolbar">
+      <div class="search-box">
+       <label>
+        Search
+       </label>
+       <input id="search" placeholder="Search live records" type="search"/>
+      </div>
+      <button class="btn btn-light" id="reload">
+       ↻ Refresh
+      </button>
+     </div>
+     <div class="table-wrap">
+      <table class="admin-table">
+       <thead>
+        <tr>
+         <th>
+          Title
+         </th>
+         <th>
+          Event Type
+         </th>
+         <th>
+          Event Date
+         </th>
+         <th>
+          Start Time
+         </th>
+         <th>
+          End Time
+         </th>
+         <th>
+          Actions
+         </th>
+        </tr>
+       </thead>
+       <tbody id="body">
+       </tbody>
+      </table>
+      <div class="empty-state" id="empty">
+       No records available.
+      </div>
+     </div>
+    </section>
+   </main>
+  </div>
+  <div class="modal-backdrop" hidden="" id="modal">
+   <div class="modal">
+    <div class="modal-head">
+     <h2 id="modalTitle">
+      Add Events
+     </h2>
+     <button class="icon-btn" id="close">
+      ×
+     </button>
+    </div>
+    <form id="form">
+     <input id="recordId" type="hidden"/>
+     <div class="form-grid">
+      <label>
+       Title *
+       <input data-key="title" id="f_title" required=""/>
+      </label>
+      <label>
+       Event Type
+       <input data-key="event_type" id="f_event_type"/>
+      </label>
+      <label>
+       Event Date *
+       <input data-key="event_date" id="f_event_date" required="" type="date"/>
+      </label>
+      <label>
+       Start Time
+       <input data-key="start_time" id="f_start_time"/>
+      </label>
+      <label>
+       End Time
+       <input data-key="end_time" id="f_end_time"/>
+      </label>
+      <label>
+       Venue
+       <input data-key="venue" id="f_venue"/>
+      </label>
+      <label>
+       Description
+       <textarea data-key="description" id="f_description" rows="3"></textarea>
+      </label>
+      <label>
+       Audience
+       <input data-key="audience" id="f_audience"/>
+      </label>
+      <label>
+       Image URL
+       <input data-key="image_url" id="f_image_url"/>
+      </label>
+      <label>
+       Status *
+       <input data-key="status" id="f_status" required=""/>
+      </label>
+     </div>
+     <div class="form-error" id="error">
+     </div>
+     <div class="modal-actions">
+      <button class="btn btn-light" id="cancel" type="button">
+       Cancel
+      </button>
+      <button class="btn btn-primary" id="save">
+       Save
+      </button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <div class="toast" id="toast">
+  </div>
+  <script src="../js/Config.js">
+  </script>
+  <script src="../js/api.js">
+  </script>
+  <script src="../js/auth.js">
+  </script>
+  <script src="../js/module.js">
+  </script>
+ </body>
+</html>

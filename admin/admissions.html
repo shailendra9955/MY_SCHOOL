@@ -1,1 +1,256 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admissions | Modern Convent School</title><link rel="stylesheet" href="../css/admin.css"><script src="../js/Config.js"></script><script src="../js/api.js"></script></head><body class="admin"><div class="admin-shell"><aside class="admin-sidebar"><div class="admin-brand"><div class="admin-logo">MC</div><div><strong>Modern Convent School</strong><small>Management Panel</small></div></div><button class="admin-mobile-toggle" data-admin-menu>☰ Menu</button><nav class="admin-nav"><a href="dashboard.html">Dashboard</a><a href="students.html">Students</a><a href="teachers.html">Teachers</a><a href="users.html">Users & Staff</a><a href="parents.html">Parents</a><a href="classes.html">Classes</a><a href="sections.html">Sections</a><a href="subjects.html">Subjects</a><a href="attendance.html">Attendance</a><a href="homework.html">Homework</a><a href="assignments.html">Assignments</a><a href="exams.html">Exams</a><a href="marks.html">Marks / Results</a><a href="fees.html">Fees</a><a href="payments.html">Payments</a><a href="notices.html">Notices</a><a href="events.html">Events</a><a href="gallery.html">Gallery</a><a href="admissions.html">Admissions</a><a href="documents.html">Documents</a><a href="messages.html">Messages</a><a href="settings.html">Settings</a><a href="../index.html">Public Website</a><a href="../login.html">Logout</a></nav></aside><main class="admin-main"><div class="admin-topbar"><strong>Admissions</strong><span>Administrator</span></div><section class="admin-page-head"><div><h1>Admissions</h1><p id="message">No browser storage is used. Records come only from the API.</p></div><button class="btn btn-primary" id="add">＋ Add Admissions</button></section><section class="admin-panel"><div class="student-toolbar"><div class="search-box"><label>Search</label><input id="search" type="search" placeholder="Search live records"></div><button class="btn btn-light" id="reload">↻ Refresh</button></div><div class="table-wrap"><table class="admin-table"><thead><tr><th>Application No.</th><th>Student Name</th><th>Date of Birth</th><th>Gender</th><th>Class Applied</th><th>Actions</th></tr></thead><tbody id="body"></tbody></table><div id="empty" class="empty-state">No records available.</div></div></section></main></div><div class="modal-backdrop" id="modal" hidden><div class="modal"><div class="modal-head"><h2 id="modalTitle">Add Admissions</h2><button class="icon-btn" id="close">×</button></div><form id="form"><input type="hidden" id="recordId"><div class="form-grid"><label>Application No. *<input id="f_application_no" data-key="application_no" required></label><label>Student Name *<input id="f_student_name" data-key="student_name" required></label><label>Date of Birth<input id="f_date_of_birth" type="date" data-key="date_of_birth" ></label><label>Gender<input id="f_gender" data-key="gender" ></label><label>Class Applied *<input id="f_class_applied" data-key="class_applied" required></label><label>Parent/Guardian Name *<input id="f_parent_name" data-key="parent_name" required></label><label>Phone *<input id="f_phone" data-key="phone" required></label><label>Email<input id="f_email" data-key="email" ></label><label>Address<textarea id="f_address" data-key="address" rows="3" ></textarea></label><label>Application Date *<input id="f_application_date" type="date" data-key="application_date" required></label><label>Status *<input id="f_status" data-key="status" required></label></div><div class="form-error" id="error"></div><div class="modal-actions"><button class="btn btn-light" type="button" id="cancel">Cancel</button><button class="btn btn-primary" id="save">Save</button></div></form></div></div><div class="toast" id="toast"></div><script>window.MCS_MODULE={'title': 'Admissions', 'get': 'getAdmissions', 'add': 'addAdmission', 'update': 'updateAdmission', 'delete': 'deleteAdmission', 'deactivate': None, 'id': 'application_id', 'columns': ['application_no', 'student_name', 'date_of_birth', 'gender', 'class_applied'], 'fields': ['application_no', 'student_name', 'date_of_birth', 'gender', 'class_applied', 'parent_name', 'phone', 'email', 'address', 'application_date', 'status']};</script><script src="../js/module.js"></script></body></html>
+<!-- Modern Convent School | admin/admissions.html | Maintainable HTML structure. Shared behavior is loaded from js/ files. -->
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   Admissions | Modern Convent School
+  </title>
+  <link href="../css/admin.css" rel="stylesheet"/>
+ </head>
+ <body class="admin" data-module-add="addAdmission" data-module-columns="application_no,student_name,date_of_birth,gender,class_applied" data-module-deactivate="" data-module-delete="deleteAdmission" data-module-fields="application_no,student_name,date_of_birth,gender,class_applied,parent_name,phone,email,address,application_date,status" data-module-get="getAdmissions" data-module-id="application_id" data-module-title="Admissions" data-module-update="updateAdmission" data-required-roles="SUPER_ADMIN,ADMIN">
+  <div class="admin-shell">
+   <aside class="admin-sidebar">
+    <div class="admin-brand">
+     <div class="admin-logo">
+      MC
+     </div>
+     <div>
+      <strong>
+       Modern Convent School
+      </strong>
+      <small>
+       Management Panel
+      </small>
+     </div>
+    </div>
+    <button class="admin-mobile-toggle" data-admin-menu="">
+     ☰ Menu
+    </button>
+    <nav class="admin-nav">
+     <a href="dashboard.html">
+      Dashboard
+     </a>
+     <a href="students.html">
+      Students
+     </a>
+     <a href="teachers.html">
+      Teachers
+     </a>
+     <a href="users.html">
+      Users &amp; Staff
+     </a>
+     <a href="parents.html">
+      Parents
+     </a>
+     <a href="classes.html">
+      Classes
+     </a>
+     <a href="sections.html">
+      Sections
+     </a>
+     <a href="subjects.html">
+      Subjects
+     </a>
+     <a href="attendance.html">
+      Attendance
+     </a>
+     <a href="homework.html">
+      Homework
+     </a>
+     <a href="assignments.html">
+      Assignments
+     </a>
+     <a href="exams.html">
+      Exams
+     </a>
+     <a href="marks.html">
+      Marks / Results
+     </a>
+     <a href="fees.html">
+      Fees
+     </a>
+     <a href="payments.html">
+      Payments
+     </a>
+     <a href="notices.html">
+      Notices
+     </a>
+     <a href="events.html">
+      Events
+     </a>
+     <a href="gallery.html">
+      Gallery
+     </a>
+     <a href="admissions.html">
+      Admissions
+     </a>
+     <a href="documents.html">
+      Documents
+     </a>
+     <a href="messages.html">
+      Messages
+     </a>
+     <a href="settings.html">
+      Settings
+     </a>
+     <a href="../index.html">
+      Public Website
+     </a>
+     <a data-logout="" href="../login.html">
+      Logout
+     </a>
+    </nav>
+   </aside>
+   <main class="admin-main">
+    <div class="admin-topbar">
+     <strong>
+      Admissions
+     </strong>
+     <span>
+      Administrator
+     </span>
+    </div>
+    <section class="admin-page-head">
+     <div>
+      <h1>
+       Admissions
+      </h1>
+      <p id="message">
+       No browser storage is used. Records come only from the API.
+      </p>
+     </div>
+     <button class="btn btn-primary" id="add">
+      ＋ Add Admissions
+     </button>
+    </section>
+    <section class="admin-panel">
+     <div class="student-toolbar">
+      <div class="search-box">
+       <label>
+        Search
+       </label>
+       <input id="search" placeholder="Search live records" type="search"/>
+      </div>
+      <button class="btn btn-light" id="reload">
+       ↻ Refresh
+      </button>
+     </div>
+     <div class="table-wrap">
+      <table class="admin-table">
+       <thead>
+        <tr>
+         <th>
+          Application No.
+         </th>
+         <th>
+          Student Name
+         </th>
+         <th>
+          Date of Birth
+         </th>
+         <th>
+          Gender
+         </th>
+         <th>
+          Class Applied
+         </th>
+         <th>
+          Actions
+         </th>
+        </tr>
+       </thead>
+       <tbody id="body">
+       </tbody>
+      </table>
+      <div class="empty-state" id="empty">
+       No records available.
+      </div>
+     </div>
+    </section>
+   </main>
+  </div>
+  <div class="modal-backdrop" hidden="" id="modal">
+   <div class="modal">
+    <div class="modal-head">
+     <h2 id="modalTitle">
+      Add Admissions
+     </h2>
+     <button class="icon-btn" id="close">
+      ×
+     </button>
+    </div>
+    <form id="form">
+     <input id="recordId" type="hidden"/>
+     <div class="form-grid">
+      <label>
+       Application No. *
+       <input data-key="application_no" id="f_application_no" required=""/>
+      </label>
+      <label>
+       Student Name *
+       <input data-key="student_name" id="f_student_name" required=""/>
+      </label>
+      <label>
+       Date of Birth
+       <input data-key="date_of_birth" id="f_date_of_birth" type="date"/>
+      </label>
+      <label>
+       Gender
+       <input data-key="gender" id="f_gender"/>
+      </label>
+      <label>
+       Class Applied *
+       <input data-key="class_applied" id="f_class_applied" required=""/>
+      </label>
+      <label>
+       Parent/Guardian Name *
+       <input data-key="parent_name" id="f_parent_name" required=""/>
+      </label>
+      <label>
+       Phone *
+       <input data-key="phone" id="f_phone" required=""/>
+      </label>
+      <label>
+       Email
+       <input data-key="email" id="f_email"/>
+      </label>
+      <label>
+       Address
+       <textarea data-key="address" id="f_address" rows="3"></textarea>
+      </label>
+      <label>
+       Application Date *
+       <input data-key="application_date" id="f_application_date" required="" type="date"/>
+      </label>
+      <label>
+       Status *
+       <input data-key="status" id="f_status" required=""/>
+      </label>
+     </div>
+     <div class="form-error" id="error">
+     </div>
+     <div class="modal-actions">
+      <button class="btn btn-light" id="cancel" type="button">
+       Cancel
+      </button>
+      <button class="btn btn-primary" id="save">
+       Save
+      </button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <div class="toast" id="toast">
+  </div>
+  <script src="../js/Config.js">
+  </script>
+  <script src="../js/api.js">
+  </script>
+  <script src="../js/auth.js">
+  </script>
+  <script src="../js/module.js">
+  </script>
+ </body>
+</html>

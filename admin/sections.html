@@ -1,1 +1,240 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sections | Modern Convent School</title><link rel="stylesheet" href="../css/admin.css"><script src="../js/Config.js"></script><script src="../js/api.js"></script></head><body class="admin"><div class="admin-shell"><aside class="admin-sidebar"><div class="admin-brand"><div class="admin-logo">MC</div><div><strong>Modern Convent School</strong><small>Management Panel</small></div></div><button class="admin-mobile-toggle" data-admin-menu>☰ Menu</button><nav class="admin-nav"><a href="dashboard.html">Dashboard</a><a href="students.html">Students</a><a href="teachers.html">Teachers</a><a href="users.html">Users & Staff</a><a href="parents.html">Parents</a><a href="classes.html">Classes</a><a href="sections.html">Sections</a><a href="subjects.html">Subjects</a><a href="attendance.html">Attendance</a><a href="homework.html">Homework</a><a href="assignments.html">Assignments</a><a href="exams.html">Exams</a><a href="marks.html">Marks / Results</a><a href="fees.html">Fees</a><a href="payments.html">Payments</a><a href="notices.html">Notices</a><a href="events.html">Events</a><a href="gallery.html">Gallery</a><a href="admissions.html">Admissions</a><a href="documents.html">Documents</a><a href="messages.html">Messages</a><a href="settings.html">Settings</a><a href="../index.html">Public Website</a><a href="../login.html">Logout</a></nav></aside><main class="admin-main"><div class="admin-topbar"><strong>Sections</strong><span>Administrator</span></div><section class="admin-page-head"><div><h1>Sections</h1><p id="message">No browser storage is used. Records come only from the API.</p></div><button class="btn btn-primary" id="add">＋ Add Sections</button></section><section class="admin-panel"><div class="student-toolbar"><div class="search-box"><label>Search</label><input id="search" type="search" placeholder="Search live records"></div><button class="btn btn-light" id="reload">↻ Refresh</button></div><div class="table-wrap"><table class="admin-table"><thead><tr><th>Class ID</th><th>Section Name</th><th>Section Code</th><th>Class Teacher ID</th><th>Room No.</th><th>Actions</th></tr></thead><tbody id="body"></tbody></table><div id="empty" class="empty-state">No records available.</div></div></section></main></div><div class="modal-backdrop" id="modal" hidden><div class="modal"><div class="modal-head"><h2 id="modalTitle">Add Sections</h2><button class="icon-btn" id="close">×</button></div><form id="form"><input type="hidden" id="recordId"><div class="form-grid"><label>Class ID *<input id="f_class_id" data-key="class_id" required></label><label>Section Name *<input id="f_section_name" data-key="section_name" required></label><label>Section Code<input id="f_section_code" data-key="section_code" ></label><label>Class Teacher ID<input id="f_class_teacher_id" data-key="class_teacher_id" ></label><label>Room No.<input id="f_room_no" data-key="room_no" ></label><label>Capacity<input id="f_capacity" data-key="capacity" ></label><label>Status *<input id="f_status" data-key="status" required></label></div><div class="form-error" id="error"></div><div class="modal-actions"><button class="btn btn-light" type="button" id="cancel">Cancel</button><button class="btn btn-primary" id="save">Save</button></div></form></div></div><div class="toast" id="toast"></div><script>window.MCS_MODULE={'title': 'Sections', 'get': 'getSections', 'add': 'addSection', 'update': 'updateSection', 'delete': 'deleteSection', 'deactivate': None, 'id': 'section_id', 'columns': ['class_id', 'section_name', 'section_code', 'class_teacher_id', 'room_no'], 'fields': ['class_id', 'section_name', 'section_code', 'class_teacher_id', 'room_no', 'capacity', 'status']};</script><script src="../js/module.js"></script></body></html>
+<!-- Modern Convent School | admin/sections.html | Maintainable HTML structure. Shared behavior is loaded from js/ files. -->
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   Sections | Modern Convent School
+  </title>
+  <link href="../css/admin.css" rel="stylesheet"/>
+ </head>
+ <body class="admin" data-module-add="addSection" data-module-columns="class_id,section_name,section_code,class_teacher_id,room_no" data-module-deactivate="" data-module-delete="deleteSection" data-module-fields="class_id,section_name,section_code,class_teacher_id,room_no,capacity,status" data-module-get="getSections" data-module-id="section_id" data-module-title="Sections" data-module-update="updateSection" data-required-roles="SUPER_ADMIN,ADMIN">
+  <div class="admin-shell">
+   <aside class="admin-sidebar">
+    <div class="admin-brand">
+     <div class="admin-logo">
+      MC
+     </div>
+     <div>
+      <strong>
+       Modern Convent School
+      </strong>
+      <small>
+       Management Panel
+      </small>
+     </div>
+    </div>
+    <button class="admin-mobile-toggle" data-admin-menu="">
+     ☰ Menu
+    </button>
+    <nav class="admin-nav">
+     <a href="dashboard.html">
+      Dashboard
+     </a>
+     <a href="students.html">
+      Students
+     </a>
+     <a href="teachers.html">
+      Teachers
+     </a>
+     <a href="users.html">
+      Users &amp; Staff
+     </a>
+     <a href="parents.html">
+      Parents
+     </a>
+     <a href="classes.html">
+      Classes
+     </a>
+     <a href="sections.html">
+      Sections
+     </a>
+     <a href="subjects.html">
+      Subjects
+     </a>
+     <a href="attendance.html">
+      Attendance
+     </a>
+     <a href="homework.html">
+      Homework
+     </a>
+     <a href="assignments.html">
+      Assignments
+     </a>
+     <a href="exams.html">
+      Exams
+     </a>
+     <a href="marks.html">
+      Marks / Results
+     </a>
+     <a href="fees.html">
+      Fees
+     </a>
+     <a href="payments.html">
+      Payments
+     </a>
+     <a href="notices.html">
+      Notices
+     </a>
+     <a href="events.html">
+      Events
+     </a>
+     <a href="gallery.html">
+      Gallery
+     </a>
+     <a href="admissions.html">
+      Admissions
+     </a>
+     <a href="documents.html">
+      Documents
+     </a>
+     <a href="messages.html">
+      Messages
+     </a>
+     <a href="settings.html">
+      Settings
+     </a>
+     <a href="../index.html">
+      Public Website
+     </a>
+     <a data-logout="" href="../login.html">
+      Logout
+     </a>
+    </nav>
+   </aside>
+   <main class="admin-main">
+    <div class="admin-topbar">
+     <strong>
+      Sections
+     </strong>
+     <span>
+      Administrator
+     </span>
+    </div>
+    <section class="admin-page-head">
+     <div>
+      <h1>
+       Sections
+      </h1>
+      <p id="message">
+       No browser storage is used. Records come only from the API.
+      </p>
+     </div>
+     <button class="btn btn-primary" id="add">
+      ＋ Add Sections
+     </button>
+    </section>
+    <section class="admin-panel">
+     <div class="student-toolbar">
+      <div class="search-box">
+       <label>
+        Search
+       </label>
+       <input id="search" placeholder="Search live records" type="search"/>
+      </div>
+      <button class="btn btn-light" id="reload">
+       ↻ Refresh
+      </button>
+     </div>
+     <div class="table-wrap">
+      <table class="admin-table">
+       <thead>
+        <tr>
+         <th>
+          Class ID
+         </th>
+         <th>
+          Section Name
+         </th>
+         <th>
+          Section Code
+         </th>
+         <th>
+          Class Teacher ID
+         </th>
+         <th>
+          Room No.
+         </th>
+         <th>
+          Actions
+         </th>
+        </tr>
+       </thead>
+       <tbody id="body">
+       </tbody>
+      </table>
+      <div class="empty-state" id="empty">
+       No records available.
+      </div>
+     </div>
+    </section>
+   </main>
+  </div>
+  <div class="modal-backdrop" hidden="" id="modal">
+   <div class="modal">
+    <div class="modal-head">
+     <h2 id="modalTitle">
+      Add Sections
+     </h2>
+     <button class="icon-btn" id="close">
+      ×
+     </button>
+    </div>
+    <form id="form">
+     <input id="recordId" type="hidden"/>
+     <div class="form-grid">
+      <label>
+       Class ID *
+       <input data-key="class_id" id="f_class_id" required=""/>
+      </label>
+      <label>
+       Section Name *
+       <input data-key="section_name" id="f_section_name" required=""/>
+      </label>
+      <label>
+       Section Code
+       <input data-key="section_code" id="f_section_code"/>
+      </label>
+      <label>
+       Class Teacher ID
+       <input data-key="class_teacher_id" id="f_class_teacher_id"/>
+      </label>
+      <label>
+       Room No.
+       <input data-key="room_no" id="f_room_no"/>
+      </label>
+      <label>
+       Capacity
+       <input data-key="capacity" id="f_capacity"/>
+      </label>
+      <label>
+       Status *
+       <input data-key="status" id="f_status" required=""/>
+      </label>
+     </div>
+     <div class="form-error" id="error">
+     </div>
+     <div class="modal-actions">
+      <button class="btn btn-light" id="cancel" type="button">
+       Cancel
+      </button>
+      <button class="btn btn-primary" id="save">
+       Save
+      </button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <div class="toast" id="toast">
+  </div>
+  <script src="../js/Config.js">
+  </script>
+  <script src="../js/api.js">
+  </script>
+  <script src="../js/auth.js">
+  </script>
+  <script src="../js/module.js">
+  </script>
+ </body>
+</html>
