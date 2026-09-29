@@ -1026,14 +1026,6 @@ function redirectAfterLogin(session) {
     // ----------------------------------------------------
     // GET SERVER ROLE
     // ----------------------------------------------------
-    /*
-     * IMPORTANT:
-     *
-     * The role comes from the Google Apps Script
-     * Users sheet.
-     *
-     * The login dropdown is NOT used here.
-     */
 
     const originalRole =
         String(
@@ -1042,7 +1034,7 @@ function redirectAfterLogin(session) {
 
 
     // ----------------------------------------------------
-    // NORMALIZE ROLE
+    // NORMALIZE ROLE FOR ROUTING ONLY
     // ----------------------------------------------------
 
     const role =
@@ -1069,42 +1061,27 @@ function redirectAfterLogin(session) {
 
     const roleHomes = {
 
-        // Super Admin
         super_admin:
             "admin/dashboard.html",
 
-
-        // Normal Admin
         admin:
             "admin/dashboard.html",
 
-
-        // Principal
         principal:
             "admin/dashboard.html",
 
-
-        // Teacher
         teacher:
             "portal/teacher.html",
 
-
-        // Accountant
         accountant:
             "portal/accountant.html",
 
-
-        // Staff
         staff:
             "portal/staff.html",
 
-
-        // Student
         student:
             "portal/dashboard.html",
 
-
-        // Parent
         parent:
             "portal/dashboard.html"
 
@@ -1145,47 +1122,7 @@ function redirectAfterLogin(session) {
             originalRole
         );
 
-
         return;
-
-    }
-
-
-    // ----------------------------------------------------
-    // SAVE CANONICAL ROLE IN SESSION
-    // ----------------------------------------------------
-    /*
-     * This is important.
-     *
-     * If the backend returns:
-     *
-     * super_administrator
-     *
-     * the frontend session will contain:
-     *
-     * super_admin
-     *
-     * after this point.
-     */
-
-    session.role =
-        role;
-
-
-    // ----------------------------------------------------
-    // SAVE SESSION AGAIN
-    // ----------------------------------------------------
-
-    if (
-        typeof MCSAuth !== "undefined" &&
-        MCSAuth &&
-        typeof MCSAuth.saveSession ===
-            "function"
-    ) {
-
-        MCSAuth.saveSession(
-            session
-        );
 
     }
 
