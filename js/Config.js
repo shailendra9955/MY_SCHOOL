@@ -40,7 +40,7 @@ const API_CONFIG = {
 const TURNSTILE_CONFIG = {
     enabled: true,
 
-    siteKey: "REPLACE_WITH_YOUR_CLOUDFLARE_TURNSTILE_SITE_KEY",
+    siteKey: "0x4AAAAAAFItUieXLYL-Lxmc",
 
     action: "login",
 
