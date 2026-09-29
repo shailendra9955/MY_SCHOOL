@@ -13,30 +13,53 @@
   };
 
   function getApiUrl() {
-    const url =
-      window.API_CONFIG &&
-      typeof API_CONFIG.GOOGLE_APPS_SCRIPT_URL === "string"
-        ? API_CONFIG.GOOGLE_APPS_SCRIPT_URL.trim()
-        : "";
+  let url = "";
 
-    if (!url) {
-      throw new Error(
-        "Google Apps Script API URL is not configured."
-      );
-    }
-
+  try {
+    /*
+     * Config.js uses:
+     *
+     * const API_CONFIG = {...}
+     *
+     * Therefore we must access API_CONFIG directly,
+     * not window.API_CONFIG.
+     */
     if (
-      !/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec\/?$/.test(
-        url
-      )
+      typeof API_CONFIG !== "undefined" &&
+      API_CONFIG &&
+      typeof API_CONFIG.GOOGLE_APPS_SCRIPT_URL === "string"
     ) {
-      throw new Error(
-        "Invalid Google Apps Script Web App URL."
-      );
+      url =
+        API_CONFIG.GOOGLE_APPS_SCRIPT_URL.trim();
     }
-
-    return url.replace(/\/+$/, "");
+  } catch (error) {
+    console.error(
+      "Unable to read API_CONFIG:",
+      error
+    );
   }
+
+  if (!url) {
+    throw new Error(
+      "Google Apps Script API is not configured."
+    );
+  }
+
+  /*
+   * Do not aggressively validate the URL.
+   * Apps Script deployment URLs can vary slightly.
+   */
+  if (
+    !/^https:\/\/script\.google\.com\//i.test(url)
+  ) {
+    console.warn(
+      "The configured API URL does not look like a standard Google Apps Script URL:",
+      url
+    );
+  }
+
+  return url.replace(/\/+$/, "");
+}
 
   function getSessionToken() {
     try {
