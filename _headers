@@ -1,0 +1,10 @@
+/*
+  Security headers for Cloudflare Pages or compatible hosts.
+  If your host does not support _headers, configure equivalent
+  headers in the hosting/CDN dashboard.
+*/
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=()
+X-Frame-Options: SAMEORIGIN
+Cross-Origin-Opener-Policy: same-origin

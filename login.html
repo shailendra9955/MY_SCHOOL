@@ -1,506 +1,124 @@
+<!-- Modern Convent School | login.html | Maintainable HTML structure. Shared behavior is loaded from js/ files. -->
 <!DOCTYPE html>
-
 <html lang="en">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        Login | Modern Convent School
-    </title>
-
-    <link
-        rel="stylesheet"
-        href="css/site.css"
-    >
-
-</head>
-
-
-<body>
-
-
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
-
-    <div data-header></div>
-
-
-    <!-- =====================================================
-         PAGE HEADER
-    ====================================================== -->
-
-    <section class="page-hero">
-
-        <div class="container">
-
-            <div class="breadcrumb">
-
-                <a href="index.html">
-                    Home
-                </a>
-
-                /
-
-                Login
-
-            </div>
-
-
-            <h1>
-                School Portal Login
-            </h1>
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         LOGIN
-    ====================================================== -->
-
-    <section class="section">
-
-        <div
-            class="container"
-            style="max-width:520px"
-        >
-
-            <div class="card">
-
-                <h2>
-                    Sign in
-                </h2>
-
-
-                <p
-                    style="
-                        color:#6b7b8c;
-                        margin-bottom:20px;
-                    "
-                >
-                    Sign in using your school account.
-                </p>
-
-
-                <!-- =========================================
-                     LOGIN FORM
-                ========================================== -->
-
-                <form
-                    id="loginForm"
-                    class="form"
-                >
-
-
-                    <!-- USERNAME -->
-
-                    <label for="username">
-
-                        Username
-
-                    </label>
-
-
-                    <input
-                        id="username"
-                        name="username"
-                        type="text"
-                        autocomplete="username"
-                        required
-                        placeholder="Enter username"
-                    >
-
-
-                    <!-- PASSWORD -->
-
-                    <label for="password">
-
-                        Password
-
-                    </label>
-
-
-                    <input
-                        id="password"
-                        name="password"
-                        type="password"
-                        autocomplete="current-password"
-                        required
-                        placeholder="Enter password"
-                    >
-
-
-                    <!-- LOGIN BUTTON -->
-
-                    <button
-                        id="loginButton"
-                        type="submit"
-                        class="btn"
-                    >
-
-                        Login
-
-                    </button>
-
-
-                    <!-- ERROR MESSAGE -->
-
-                    <div
-                        id="loginMessage"
-                        style="
-                            display:none;
-                            margin-top:15px;
-                            padding:12px;
-                            border-radius:6px;
-                            background:#fff1f1;
-                            color:#b42318;
-                        "
-                    ></div>
-
-
-                </form>
-
-
-                <p
-                    style="
-                        color:#6b7b8c;
-                        margin-top:20px;
-                        font-size:14px;
-                    "
-                >
-
-                    If you do not have an account,
-                    please contact the school administrator.
-
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
-
-    <div data-footer></div>
-
-
-    <!-- =====================================================
-         JAVASCRIPT
-    ====================================================== -->
-
-    <script src="js/Config.js"></script>
-
-    <script src="js/api.js"></script>
-
-    <script src="js/app.js"></script>
-
-
-    <!-- =====================================================
-         LOGIN SCRIPT
-    ====================================================== -->
-
-    <script>
-
-        document
-            .getElementById("loginForm")
-            .addEventListener(
-                "submit",
-                async function(event) {
-
-                    event.preventDefault();
-
-
-                    const username =
-                        document
-                            .getElementById("username")
-                            .value
-                            .trim();
-
-
-                    const password =
-                        document
-                            .getElementById("password")
-                            .value;
-
-
-                    const button =
-                        document
-                            .getElementById("loginButton");
-
-
-                    const message =
-                        document
-                            .getElementById("loginMessage");
-
-
-                    // -------------------------------------------------
-                    // Clear old message
-                    // -------------------------------------------------
-
-                    message.style.display =
-                        "none";
-
-                    message.textContent =
-                        "";
-
-
-                    // -------------------------------------------------
-                    // Check API configuration
-                    // -------------------------------------------------
-
-                    if (!MCSApi.configured()) {
-
-                        showLoginError(
-                            "Google Apps Script API URL is not configured. " +
-                            "Please add it to js/Config.js."
-                        );
-
-                        return;
-
-                    }
-
-
-                    // -------------------------------------------------
-                    // Validate
-                    // -------------------------------------------------
-
-                    if (!username) {
-
-                        showLoginError(
-                            "Please enter your username."
-                        );
-
-                        return;
-
-                    }
-
-
-                    if (!password) {
-
-                        showLoginError(
-                            "Please enter your password."
-                        );
-
-                        return;
-
-                    }
-
-
-                    // -------------------------------------------------
-                    // Disable button
-                    // -------------------------------------------------
-
-                    button.disabled =
-                        true;
-
-                    button.textContent =
-                        "Signing in...";
-
-
-                    try {
-
-
-                        // =============================================
-                        // SEND LOGIN REQUEST
-                        // =============================================
-
-                        const result =
-                            await MCSApi.post(
-                                API_ACTIONS.LOGIN,
-                                {
-
-                                    username:
-                                        username,
-
-                                    password:
-                                        password
-
-                                }
-                            );
-
-
-                        console.log(
-                            "Login response:",
-                            result
-                        );
-
-
-                        // =============================================
-                        // FIND SESSION
-                        // =============================================
-
-                        const session =
-                            result &&
-                            result.session
-                                ? result.session
-                                : result;
-
-
-                        if (!session) {
-
-                            throw new Error(
-                                "Login response did not contain a session."
-                            );
-
-                        }
-
-
-                        // =============================================
-                        // GET ROLE
-                        // =============================================
-
-                        const role =
-                            String(
-                                session.role ||
-                                result.role ||
-                                ""
-                            )
-                            .trim()
-                            .toLowerCase();
-
-
-                        if (!role) {
-
-                            throw new Error(
-                                "The server did not return a user role."
-                            );
-
-                        }
-
-
-                        // =============================================
-                        // SAVE SESSION
-                        //
-                        // This is NOT school data.
-                        // It is only the current login session.
-                        // =============================================
-
-                        sessionStorage.setItem(
-                            "MCS_SESSION",
-                            JSON.stringify(session)
-                        );
-
-
-                        // =============================================
-                        // REDIRECT
-                        // =============================================
-
-                        if (
-                            role === "admin" ||
-                            role === "super_admin"
-                        ) {
-
-                            window.location.href =
-                                "admin/dashboard.html";
-
-                            return;
-
-                        }
-
-
-                        if (
-                            role === "teacher" ||
-                            role === "staff" ||
-                            role === "accountant"
-                        ) {
-
-                            window.location.href =
-                                "portal/teacher.html";
-
-                            return;
-
-                        }
-
-
-                        if (
-                            role === "student" ||
-                            role === "parent"
-                        ) {
-
-                            window.location.href =
-                                "portal/dashboard.html";
-
-                            return;
-
-                        }
-
-
-                        throw new Error(
-                            "Your account has an unsupported role: " +
-                            role
-                        );
-
-
-                    }
-
-
-                    catch (error) {
-
-                        console.error(
-                            "Login error:",
-                            error
-                        );
-
-
-                        showLoginError(
-                            error.message ||
-                            "Login failed. Please check your username and password."
-                        );
-
-                    }
-
-
-                    finally {
-
-                        button.disabled =
-                            false;
-
-                        button.textContent =
-                            "Login";
-
-                    }
-
-                }
-            );
-
-
-        // ============================================================
-        // SHOW LOGIN ERROR
-        // ============================================================
-
-        function showLoginError(message) {
-
-            const element =
-                document.getElementById(
-                    "loginMessage"
-                );
-
-
-            element.textContent =
-                message;
-
-
-            element.style.display =
-                "block";
-
-        }
-
-    </script>
-
-
-</body>
-
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Login | Modern Convent School
+  </title>
+  <link href="css/site.css" rel="stylesheet"/>
+  <!-- Cloudflare Turnstile client-side widget. -->
+  <script async="" defer="" src="https://challenges.cloudflare.com/turnstile/v0/api.js">
+  </script>
+ </head>
+ <body>
+  <!-- Shared public website header. -->
+  <div data-header="">
+  </div>
+  <!-- Page heading / breadcrumb. -->
+  <section class="page-hero">
+   <div class="container">
+    <div class="breadcrumb">
+     <a href="index.html">
+      Home
+     </a>
+     / Login
+    </div>
+    <h1>
+     School Portal Login
+    </h1>
+   </div>
+  </section>
+  <!-- Secure login area. -->
+  <section class="section login-section">
+   <div class="container login-container">
+    <div class="card login-card">
+     <div class="login-header">
+      <span class="eyebrow">
+       Secure Access
+      </span>
+      <h2>
+       Sign in
+      </h2>
+      <p>
+       Sign in using your school account.
+                        Select your account type before continuing.
+      </p>
+     </div>
+     <form class="form" id="loginForm" novalidate="">
+      <!-- User type is a request only. The server decides the real role. -->
+      <label for="userType">
+       Login as
+      </label>
+      <select autocomplete="organization-title" id="userType" name="userType" required="">
+      </select>
+      <label for="username">
+       Username
+      </label>
+      <input autocomplete="username" id="username" maxlength="80" name="username" placeholder="Enter username" required="" spellcheck="false" type="text"/>
+      <label for="password">
+       Password
+      </label>
+      <div class="password-field">
+       <input autocomplete="current-password" id="password" maxlength="128" name="password" placeholder="Enter password" required="" type="password"/>
+       <button aria-label="Show password" aria-pressed="false" class="password-toggle" id="togglePassword" type="button">
+        Show
+       </button>
+      </div>
+      <!-- Additional locally generated human-check. -->
+      <div class="captcha-block">
+       <div class="captcha-heading">
+        <strong>
+         Security Check
+        </strong>
+        <button aria-label="Generate a new CAPTCHA" class="captcha-refresh" id="refreshCaptcha" title="Generate a new CAPTCHA" type="button">
+         ↻
+        </button>
+       </div>
+       <div class="captcha-row">
+        <canvas aria-label="Generated CAPTCHA" height="70" id="captchaCanvas" width="260">
+        </canvas>
+        <input aria-label="Enter CAPTCHA code" autocomplete="off" id="captchaInput" inputmode="text" maxlength="8" placeholder="Enter code" required="" type="text"/>
+       </div>
+       <small class="security-note">
+        This is an additional client-side check.
+                            Cloudflare verification is enforced separately.
+       </small>
+      </div>
+      <!-- Cloudflare Turnstile. The token must be verified server-side. -->
+      <div class="turnstile-wrapper">
+       <div id="turnstileWidget">
+       </div>
+       <p aria-live="polite" class="security-note" id="turnstileStatus">
+        Loading Cloudflare verification…
+       </p>
+      </div>
+      <button class="btn login-submit" id="loginButton" type="submit">
+       Login
+      </button>
+      <div aria-live="assertive" class="login-message" hidden="" id="loginMessage" role="alert">
+      </div>
+     </form>
+     <p class="login-help">
+      If you do not have an account, please contact
+                    the school administrator.
+     </p>
+    </div>
+   </div>
+  </section>
+  <!-- Shared public website footer. -->
+  <div data-footer="">
+  </div>
+  <script src="js/Config.js">
+  </script>
+  <script src="js/api.js">
+  </script>
+  <script src="js/app.js">
+  </script>
+  <script src="js/auth.js">
+  </script>
+  <script src="js/login.js">
+  </script>
+ </body>
 </html>
