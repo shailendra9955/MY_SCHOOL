@@ -12,60 +12,71 @@
     USER: "mcs_user"
   };
 
-  function getApiUrl() {
-  let url = "";
+  /* ==========================================================
+     GET API URL
+     ========================================================== */
 
-  try {
+  function getApiUrl() {
+    let url = "";
+
+    try {
+      /*
+       * Config.js uses:
+       *
+       * const API_CONFIG = {...}
+       *
+       * Therefore use API_CONFIG directly.
+       */
+      if (
+        typeof API_CONFIG !== "undefined" &&
+        API_CONFIG &&
+        typeof API_CONFIG.GOOGLE_APPS_SCRIPT_URL === "string"
+      ) {
+        url =
+          API_CONFIG.GOOGLE_APPS_SCRIPT_URL.trim();
+      }
+    } catch (error) {
+      console.error(
+        "Unable to read API_CONFIG:",
+        error
+      );
+    }
+
+    if (!url) {
+      throw new Error(
+        "Google Apps Script API is not configured."
+      );
+    }
+
     /*
-     * Config.js uses:
-     *
-     * const API_CONFIG = {...}
-     *
-     * Therefore we must access API_CONFIG directly,
-     * not window.API_CONFIG.
+     * Don't reject the URL just because its exact
+     * structure differs from our expectation.
      */
     if (
-      typeof API_CONFIG !== "undefined" &&
-      API_CONFIG &&
-      typeof API_CONFIG.GOOGLE_APPS_SCRIPT_URL === "string"
+      !/^https:\/\/script\.google\.com\//i.test(url)
     ) {
-      url =
-        API_CONFIG.GOOGLE_APPS_SCRIPT_URL.trim();
+      console.warn(
+        "Configured API URL does not look like a standard Google Apps Script URL:",
+        url
+      );
     }
-  } catch (error) {
-    console.error(
-      "Unable to read API_CONFIG:",
-      error
-    );
+
+    return url.replace(/\/+$/, "");
   }
 
-  if (!url) {
-    throw new Error(
-      "Google Apps Script API is not configured."
-    );
-  }
-
-  /*
-   * Do not aggressively validate the URL.
-   * Apps Script deployment URLs can vary slightly.
-   */
-  if (
-    !/^https:\/\/script\.google\.com\//i.test(url)
-  ) {
-    console.warn(
-      "The configured API URL does not look like a standard Google Apps Script URL:",
-      url
-    );
-  }
-
-  return url.replace(/\/+$/, "");
-}
+  /* ==========================================================
+     SESSION
+     ========================================================== */
 
   function getSessionToken() {
     try {
       return (
-        sessionStorage.getItem(STORAGE_KEYS.SESSION) ||
-        localStorage.getItem(STORAGE_KEYS.SESSION) ||
+        sessionStorage.getItem(
+          STORAGE_KEYS.SESSION
+        ) ||
+        localStorage.getItem(
+          STORAGE_KEYS.SESSION
+        ) ||
         ""
       ).trim();
     } catch (error) {
@@ -101,7 +112,9 @@
 
         sessionStorage.setItem(
           STORAGE_KEYS.USER,
-          JSON.stringify(user || {})
+          JSON.stringify(
+            user || {}
+          )
         );
       }
     } catch (error) {
@@ -137,21 +150,30 @@
     }
   }
 
-  function buildPayload(action, payload) {
+  /* ==========================================================
+     PAYLOAD
+     ========================================================== */
+
+  function buildPayload(
+    action,
+    payload
+  ) {
     const data =
       payload &&
       typeof payload === "object"
-        ? { ...payload }
+        ? {
+            ...payload
+          }
         : {};
 
     data.action = action;
 
     /*
-     * Login does not need a session token.
-     * Every other authenticated request receives it.
+     * Login does not require a session token.
      */
     if (action !== "login") {
-      const token = getSessionToken();
+      const token =
+        getSessionToken();
 
       if (token) {
         data.sessionToken = token;
@@ -161,8 +183,15 @@
     return data;
   }
 
-  async function parseResponse(response) {
-    const text = await response.text();
+  /* ==========================================================
+     RESPONSE
+     ========================================================== */
+
+  async function parseResponse(
+    response
+  ) {
+    const text =
+      await response.text();
 
     if (!text) {
       throw new Error(
@@ -173,7 +202,8 @@
     let data;
 
     try {
-      data = JSON.parse(text);
+      data =
+        JSON.parse(text);
     } catch (error) {
       console.error(
         "Invalid API JSON response:",
@@ -185,10 +215,6 @@
       );
     }
 
-    /*
-     * Apps Script can return HTTP 200 while the
-     * application itself reports success:false.
-     */
     if (
       data &&
       (
@@ -206,29 +232,49 @@
     return data;
   }
 
+  /* ==========================================================
+     MAIN REQUEST
+     ========================================================== */
+
   async function request(
     action,
     payload = {},
     method = "POST"
   ) {
-    const url = getApiUrl();
+    const url =
+      getApiUrl();
 
     const upperMethod =
-      String(method || "POST").toUpperCase();
+      String(
+        method || "POST"
+      ).toUpperCase();
 
     const data =
-      buildPayload(action, payload);
+      buildPayload(
+        action,
+        payload
+      );
 
     const controller =
       new AbortController();
 
-    const timeout =
-      Number(
-        (
-          window.API_CONFIG &&
-          API_CONFIG.timeout
-        ) || 30000
-      );
+    let timeout =
+      30000;
+
+    try {
+      if (
+        typeof API_CONFIG !== "undefined" &&
+        API_CONFIG &&
+        API_CONFIG.timeout
+      ) {
+        timeout =
+          Number(
+            API_CONFIG.timeout
+          ) || 30000;
+      }
+    } catch (error) {
+      timeout = 30000;
+    }
 
     const timeoutId =
       setTimeout(
@@ -241,112 +287,92 @@
     try {
       let response;
 
-      /*
-       * --------------------------------------------------------
-       * GET
-       * --------------------------------------------------------
-       *
-       * Useful for public endpoints such as health.
-       */
-      if (upperMethod === "GET") {
+      /* ------------------------------------------------------
+         GET
+         ------------------------------------------------------ */
+
+      if (
+        upperMethod === "GET"
+      ) {
         const requestUrl =
           new URL(url);
 
-        Object.keys(data).forEach(
-          function (key) {
-            const value = data[key];
+        Object.keys(data)
+          .forEach(
+            function (key) {
+              const value =
+                data[key];
 
-            if (
-              value === undefined ||
-              value === null
-            ) {
-              return;
+              if (
+                value === undefined ||
+                value === null
+              ) {
+                return;
+              }
+
+              requestUrl.searchParams.set(
+                key,
+                typeof value === "object"
+                  ? JSON.stringify(
+                      value
+                    )
+                  : String(value)
+              );
             }
+          );
 
-            requestUrl.searchParams.set(
-              key,
-              typeof value === "object"
-                ? JSON.stringify(value)
-                : String(value)
-            );
-          }
-        );
-
-        response = await fetch(
-          requestUrl.toString(),
-          {
-            method: "GET",
-
-            /*
-             * Apps Script Content Service redirects
-             * responses to script.googleusercontent.com.
-             */
-            redirect: "follow",
-
-            cache: "no-store",
-
-            signal:
-              controller.signal
-          }
-        );
+        response =
+          await fetch(
+            requestUrl.toString(),
+            {
+              method: "GET",
+              redirect: "follow",
+              cache: "no-store",
+              signal:
+                controller.signal
+            }
+          );
       }
 
-      /*
-       * --------------------------------------------------------
-       * POST
-       * --------------------------------------------------------
-       *
-       * IMPORTANT:
-       *
-       * Do NOT use application/json here.
-       *
-       * Apps Script Web Apps work better with a
-       * simple text/plain POST, avoiding a CORS
-       * preflight request.
-       */
+      /* ------------------------------------------------------
+         POST
+         ------------------------------------------------------ */
+
       else {
-        response = await fetch(
-          url,
-          {
-            method: "POST",
+        response =
+          await fetch(
+            url,
+            {
+              method: "POST",
 
-            redirect: "follow",
+              /*
+               * Important for Apps Script.
+               */
+              headers: {
+                "Content-Type":
+                  "text/plain;charset=utf-8"
+              },
 
-            cache: "no-store",
+              /*
+               * Apps Script doPost() reads:
+               *
+               * e.postData.contents
+               */
+              body:
+                JSON.stringify(data),
 
-            /*
-             * text/plain is intentional.
-             *
-             * Code.gs reads:
-             * e.postData.contents
-             *
-             * and then JSON.parse() handles the body.
-             */
-            headers: {
-              "Content-Type":
-                "text/plain;charset=utf-8"
-            },
+              redirect: "follow",
 
-            body:
-              JSON.stringify(data),
+              cache: "no-store",
 
-            /*
-             * Never send cookies to Apps Script.
-             * Authentication is handled by our
-             * sessionToken in the request body.
-             */
-            credentials: "omit",
+              credentials: "omit",
 
-            signal:
-              controller.signal
-          }
-        );
+              signal:
+                controller.signal
+            }
+          );
       }
 
-      /*
-       * If fetch reached this point, the network
-       * request completed.
-       */
       if (!response) {
         throw new Error(
           "No response received from API."
@@ -368,17 +394,13 @@
         );
       }
 
-      /*
-       * Browser normally reports CORS/network
-       * problems simply as:
-       *
-       * TypeError: Failed to fetch
-       */
       if (
         error &&
         error.name === "TypeError" &&
         /fetch/i.test(
-          String(error.message || "")
+          String(
+            error.message || ""
+          )
         )
       ) {
         console.error(
@@ -400,9 +422,15 @@
     }
 
     finally {
-      clearTimeout(timeoutId);
+      clearTimeout(
+        timeoutId
+      );
     }
   }
+
+  /* ==========================================================
+     GET
+     ========================================================== */
 
   async function get(
     action,
@@ -415,6 +443,10 @@
     );
   }
 
+  /* ==========================================================
+     POST
+     ========================================================== */
+
   async function post(
     action,
     payload = {}
@@ -425,6 +457,10 @@
       "POST"
     );
   }
+
+  /* ==========================================================
+     LOGIN
+     ========================================================== */
 
   async function login(
     username,
@@ -443,29 +479,29 @@
       );
     }
 
-    /*
-     * IMPORTANT:
-     *
-     * We intentionally do NOT send a role from
-     * the browser. The Apps Script backend reads
-     * the actual role from the Users sheet.
-     */
     const payload = {
-      username: String(username).trim(),
-      password: String(password)
+      username:
+        String(
+          username
+        ).trim(),
+
+      password:
+        String(password)
     };
 
     /*
-     * Allows Turnstile token or other future
-     * public login fields to be passed.
+     * Optional Turnstile token.
      */
-    Object.keys(extra || {}).forEach(
+    Object.keys(
+      extra || {}
+    ).forEach(
       function (key) {
         if (
           extra[key] !== undefined &&
           extra[key] !== null
         ) {
-          payload[key] = extra[key];
+          payload[key] =
+            extra[key];
         }
       }
     );
@@ -476,17 +512,6 @@
         payload
       );
 
-    /*
-     * Apps Script returns:
-     *
-     * {
-     *   success: true,
-     *   data: {
-     *     session: {...},
-     *     user: {...}
-     *   }
-     * }
-     */
     const data =
       response &&
       response.data !== undefined
@@ -508,25 +533,28 @@
       );
     }
 
-    saveLoginResponse(data);
+    saveLoginResponse(
+      data
+    );
 
     return data;
   }
+
+  /* ==========================================================
+     LOGOUT
+     ========================================================== */
 
   async function logout() {
     const token =
       getSessionToken();
 
-    /*
-     * Clear local session even if the server
-     * cannot be reached.
-     */
     try {
       if (token) {
         await post(
           "logout",
           {
-            sessionToken: token
+            sessionToken:
+              token
           }
         );
       }
@@ -544,6 +572,10 @@
     };
   }
 
+  /* ==========================================================
+     VERIFY SESSION
+     ========================================================== */
+
   async function verifySession() {
     const token =
       getSessionToken();
@@ -560,7 +592,8 @@
         await post(
           "verifySession",
           {
-            sessionToken: token
+            sessionToken:
+              token
           }
         );
 
@@ -571,19 +604,20 @@
           : response
       );
     } catch (error) {
-      /*
-       * Invalid/expired session should clean
-       * the browser session.
-       */
       clearSession();
-
       throw error;
     }
   }
 
+  /* ==========================================================
+     HEALTH
+     ========================================================== */
+
   async function health() {
     const response =
-      await get("health");
+      await get(
+        "health"
+      );
 
     return (
       response &&
@@ -592,6 +626,10 @@
         : response
     );
   }
+
+  /* ==========================================================
+     USER
+     ========================================================== */
 
   function getCurrentUser() {
     try {
@@ -614,11 +652,9 @@
     );
   }
 
-  /*
-   * ----------------------------------------------------------
-   * PUBLIC API
-   * ----------------------------------------------------------
-   */
+  /* ==========================================================
+     PUBLIC API
+     ========================================================== */
 
   window.MCSApi = {
     request,
@@ -635,15 +671,16 @@
     isLoggedIn,
     clearSession,
 
-    configured: function () {
-      try {
-        return Boolean(
-          getApiUrl()
-        );
-      } catch (error) {
-        return false;
+    configured:
+      function () {
+        try {
+          return Boolean(
+            getApiUrl()
+          );
+        } catch (error) {
+          return false;
+        }
       }
-    }
   };
 
 })();
