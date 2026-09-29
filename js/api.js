@@ -379,9 +379,35 @@
         );
       }
 
-      return await parseResponse(
-        response
-      );
+      const result =
+  await parseResponse(response);
+
+/*
+ * Preserve the original MCSApi contract.
+ *
+ * Apps Script response:
+ *
+ * {
+ *   success: true,
+ *   data: {
+ *     session: {...},
+ *     user: {...}
+ *   }
+ * }
+ *
+ * Existing frontend pages expect:
+ *
+ * {
+ *   session: {...},
+ *   user: {...}
+ * }
+ */
+return (
+  result &&
+  result.data !== undefined
+    ? result.data
+    : result
+);
     }
 
     catch (error) {
@@ -463,82 +489,78 @@
      ========================================================== */
 
   async function login(
-    username,
-    password,
-    extra = {}
-  ) {
-    if (!username) {
-      throw new Error(
-        "Username is required."
-      );
-    }
+  username,
+  password,
+  extra = {}
+) {
+  if (!username) {
+    throw new Error(
+      "Username is required."
+    );
+  }
 
-    if (!password) {
-      throw new Error(
-        "Password is required."
-      );
-    }
+  if (!password) {
+    throw new Error(
+      "Password is required."
+    );
+  }
 
-    const payload = {
-      username:
-        String(
-          username
-        ).trim(),
+  const payload = {
+    username:
+      String(username).trim(),
 
-      password:
-        String(password)
-    };
+    password:
+      String(password)
+  };
 
-    /*
-     * Optional Turnstile token.
-     */
-    Object.keys(
-      extra || {}
-    ).forEach(
-      function (key) {
-        if (
-          extra[key] !== undefined &&
-          extra[key] !== null
-        ) {
-          payload[key] =
-            extra[key];
-        }
+  /*
+   * Optional fields such as Turnstile token.
+   */
+  Object.keys(extra || {}).forEach(
+    function (key) {
+      if (
+        extra[key] !== undefined &&
+        extra[key] !== null
+      ) {
+        payload[key] = extra[key];
       }
+    }
+  );
+
+  /*
+   * post() now returns the API's `data`
+   * object directly.
+   */
+  const data =
+    await post(
+      "login",
+      payload
     );
 
-    const response =
-      await post(
-        "login",
-        payload
-      );
+  if (!data) {
+    throw new Error(
+      "Login server returned an empty response."
+    );
+  }
 
-    const data =
-      response &&
-      response.data !== undefined
-        ? response.data
-        : response;
-
-    if (!data) {
-      throw new Error(
-        "Login server returned an empty response."
-      );
-    }
-
-    if (
-      !data.session ||
-      !data.user
-    ) {
-      throw new Error(
-        "Login response is incomplete."
-      );
-    }
-
-    saveLoginResponse(
+  if (
+    !data.session ||
+    !data.user
+  ) {
+    console.error(
+      "Unexpected login response:",
       data
     );
 
-    return data;
+    throw new Error(
+      "The server did not return a valid login session."
+    );
   }
+
+  saveLoginResponse(data);
+
+  return data;
+}
 
   /* ==========================================================
      LOGOUT
