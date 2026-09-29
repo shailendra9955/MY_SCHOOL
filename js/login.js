@@ -902,168 +902,134 @@
 
     function redirectAfterLogin(session) {
 
-        /*
-         * IMPORTANT:
-         *
-         * The role comes from the server-created session.
-         *
-         * We do NOT use:
-         *
-         * userType.value
-         *
-         * to determine access.
-         */
-
-        if (
-            !session ||
-            !session.role
-        ) {
-
-            showError(
-                "The server did not return a valid user role."
-            );
-
-
-            return;
-
-        }
-
-
-        let role =
-            session.role;
-
-
-        /*
-         * Normalize through the central authentication
-         * helper when available.
-         */
-
-        if (
-            typeof MCSAuth !==
-            "undefined" &&
-            MCSAuth &&
-            typeof MCSAuth.normalizeRole ===
-                "function"
-        ) {
-
-            role =
-                MCSAuth.normalizeRole(
-                    role
-                );
-
-        } else {
-
-            role =
-                String(
-                    role || ""
-                )
-                    .trim()
-                    .toLowerCase()
-                    .replace(
-                        /[\s-]+/g,
-                        "_"
-                    );
-
-        }
-
-
-        if (!role) {
-
-            showError(
-                "The server returned an invalid user role."
-            );
-
-
-            return;
-
-        }
-
-
-        let roleHome = "";
-
-
-        /*
-         * Use the central authentication routing helper.
-         */
-
-        if (
-            typeof MCSAuth !==
-            "undefined" &&
-            MCSAuth &&
-            typeof MCSAuth.getRoleHome ===
-                "function"
-        ) {
-
-            roleHome =
-                MCSAuth.getRoleHome(
-                    role
-                );
-
-        }
-
-
-        /*
-         * Fallback routing in case auth.js does not
-         * contain getRoleHome().
-         */
-
-        if (!roleHome) {
-
-            const roleHomes = {
-
-                super_admin:
-                    "admin/dashboard.html",
-
-                admin:
-                    "admin/dashboard.html",
-
-                principal:
-                    "admin/dashboard.html",
-
-                teacher:
-                    "portal/teacher.html",
-
-                accountant:
-                    "portal/accountant.html",
-
-                staff:
-                    "portal/staff.html",
-
-                student:
-                    "portal/dashboard.html",
-
-                parent:
-                    "portal/dashboard.html"
-
-            };
-
-
-            roleHome =
-                roleHomes[role] ||
-                "portal/dashboard.html";
-
-        }
-
-
-        /*
-         * Convert ../admin/... style paths to paths
-         * appropriate for the current login page.
-         */
-
-        roleHome =
-            String(
-                roleHome
-            ).replace(
-                "../",
-                ""
-            );
-
-
-        window.location.replace(
-            roleHome
+    if (!session) {
+        console.error(
+            "Redirect failed: session is missing."
         );
 
+        window.location.replace(
+            "login.html?reason=session"
+        );
+
+        return;
     }
+
+
+    let role =
+        String(
+            session.role || ""
+        )
+            .trim()
+            .toLowerCase()
+            .replace(
+                /[\s-]+/g,
+                "_"
+            );
+
+
+    console.log(
+        "Authenticated server role:",
+        role
+    );
+
+
+    /*
+     * IMPORTANT:
+     *
+     * The role comes from the Google Apps Script
+     * Users sheet. We do not use the login dropdown.
+     */
+
+
+    const roleHomes = {
+
+        super_admin:
+            "admin/dashboard.html",
+
+        admin:
+            "admin/dashboard.html",
+
+        principal:
+            "admin/dashboard.html",
+
+        teacher:
+            "portal/teacher.html",
+
+        accountant:
+            "portal/accountant.html",
+
+        staff:
+            "portal/staff.html",
+
+        student:
+            "portal/dashboard.html",
+
+        parent:
+            "portal/dashboard.html"
+
+    };
+
+
+    const destination =
+        roleHomes[role];
+
+
+    console.log(
+        "Redirect destination:",
+        destination
+    );
+
+
+    if (!destination) {
+
+        console.error(
+            "Unknown authenticated role:",
+            session.role
+        );
+
+
+        showError(
+            "Login succeeded, but no portal is configured for the account role: " +
+            session.role
+        );
+
+
+        return;
+
+    }
+
+
+    /*
+     * login.html is in the website root.
+     *
+     * Therefore:
+     *
+     * admin/dashboard.html
+     *
+     * means:
+     *
+     * /admin/dashboard.html
+     */
+
+
+    const targetUrl =
+        new URL(
+            destination,
+            window.location.href
+        ).href;
+
+
+    console.log(
+        "Final redirect URL:",
+        targetUrl
+    );
+
+
+    window.location.replace(
+        targetUrl
+    );
+
+}
 
 
     // ========================================================
