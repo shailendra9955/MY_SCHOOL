@@ -19,7 +19,7 @@ const SCHOOL_CONFIG = {
 
 const API_CONFIG = {
     GOOGLE_APPS_SCRIPT_URL:
-        "https://script.google.com/macros/s/AKfycbwe2qVsHHGRlPA_DHfCDaMJ8zthTucsxvbGlAbwdPWGI03EsF5DpqGTV8YCrpFOQwB8/exec",
+        "https://script.google.com/macros/s/AKfycbyIFXLEM3cjmMMS-sQNmAD_mrbQW_BQKAxh7WaDfc8W0GDMy3XZFG-5FN5Dh2m18jbw/exec",
 
     timeout: 30000,
 
