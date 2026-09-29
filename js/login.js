@@ -1062,13 +1062,13 @@ function redirectAfterLogin(session) {
     const roleHomes = {
 
         super_admin:
-            "admin/dashboard.html",
+            "./admin/dashboard.html",
 
         admin:
-            "admin/dashboard.html",
+            "./admin/dashboard.html",
 
         principal:
-            "admin/dashboard.html",
+            "./admin/dashboard.html",
 
         teacher:
             "portal/teacher.html",
