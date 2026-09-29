@@ -900,6 +900,48 @@
     // REDIRECT AFTER LOGIN
     // ========================================================
 
+    function normalizePortalRole(role) {
+    const value = String(role || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[\s-]+/g, "_");
+
+    switch (value) {
+
+        case "super_admin":
+        case "superadministrator":
+        case "super_administrator":
+        case "superadmin":
+            return "super_admin";
+
+        case "admin":
+        case "administrator":
+        case "administrator_account":
+            return "admin";
+
+        case "principal":
+            return "principal";
+
+        case "teacher":
+            return "teacher";
+
+        case "accountant":
+            return "accountant";
+
+        case "staff":
+            return "staff";
+
+        case "student":
+            return "student";
+
+        case "parent":
+            return "parent";
+
+        default:
+            return value;
+    }
+}
+
     function redirectAfterLogin(session) {
 
     if (!session) {
